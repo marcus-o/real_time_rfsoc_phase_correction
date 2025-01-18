@@ -6,6 +6,6 @@ typedef struct {
 	ap_int<32> send;
 } config1;
 
-void passer_config_writer(
+void const_config_writer(
 		hls::stream<config1> &config_out_q
 	);
