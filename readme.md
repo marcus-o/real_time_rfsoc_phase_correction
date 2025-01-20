@@ -23,15 +23,15 @@ The provided overlays listen for interferograms at port ADC_D. For testing, the 
 - download the RFSoC4x2 board files from https://www.realdigital.org/hardware/rfsoc-4x2
 - copy the folder from the zip file to the
 ```
-(vivado install folder)/(version/data)/boards/board_files
+(xilinx install folder)/Vivado/2022.1/data/boards/board_files
 ```
 folder (create the folder if it doesn't exist).
 
-3. build the vitis_hls ip: for each subfolder in the vitis_hls folder:
+3. build the Vitis HLS ip: for each subfolder in the vitis_hls folder:
 - in a console, change the working directory to the subfolder
-- to make it a vitis_hls console, run:
+- to make a vitis_hls console, run (for unix there will be a similar command):
 ```
-c:\Xilinx\Vitis_HLS\2022.1\settings64.bat
+(xilinx install folder)\Vitis_HLS\2022.1\settings64.bat
 ```
 to build the ip using the tcl file in the subfolder, run:
 ```
