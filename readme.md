@@ -21,7 +21,7 @@ The provided overlays listen for interferograms at port ADC_D. For testing, the 
 
 2. install the RFSoC4x2 board files
 - download the RFSoC4x2 board files from https://www.realdigital.org/hardware/rfsoc-4x2
-- copy the folder in the downloaded zip file into the
+- copy the folder from the zip file to the
 ```
 (vivado install folder)/(version/data)/boards/board_files
 ```
