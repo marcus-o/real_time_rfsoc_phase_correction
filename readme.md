@@ -6,8 +6,10 @@ The code should be adaptable to other hardware implementing similar field-progra
 ## Steps for using the provided overlays on the RFSoC4x2
 (real-time phase correction and averaging for a detuning of 20 kHz +- 5%)
 
-Connect to the Jupyter environment on the RFSoC4x2 in your browser and upload the contents of the pynq folder.
-The provided notebooks output the full interferogram train with phase correction (phase_correction_full_data.ipynb), coherently averaged interferograms after phase correction (phase_correction_averaging.ipynb), or, for comparison, the full interferogram train without phase correction (no_phase_correction_full_data.ipynb).
+Connect to the Jupyter environment on the RFSoC4x2 in your browser and upload the contents of the pynq folder. The provided notebooks output:
+- the full interferogram train with phase correction (phase_correction_full_data.ipynb)
+- coherently averaged interferograms after phase correction (phase_correction_averaging.ipynb)
+- the full interferogram train without phase correction (no_phase_correction_full_data.ipynb)
 
 ## Connecting the RFSoC4x2
 The AMD Zynq Ultrascale+ RFSoC XCZU48DR-2FFVG1517E accepts maximally a 1 V peak-to-peak voltage at its analog-to-digital converters which are 100-Ohm terminated. 
@@ -33,7 +35,7 @@ folder (create the folder if it doesn't exist).
 ```
 (xilinx install folder)\Vitis_HLS\2022.1\settings64.bat
 ```
-to build the ip using the tcl file in the subfolder, run:
+- to build the ip using the tcl file in the subfolder, run:
 ```
 vitis_hls build.tcl
 ```
