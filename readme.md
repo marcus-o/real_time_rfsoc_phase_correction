@@ -3,6 +3,9 @@
 This repository contains a real-time self-phase-correction algorithm for the RFSoC4x2 (https://www.realdigital.org/hardware/rfsoc-4x2) board.
 The code should be adaptable to other hardware implementing similar field-programmable gate arrays.
 
+## Understanding the code
+Two python scripts in the python_model_code folder illustrate the function of the algorithm and the data flow in the FPGA implementation.
+
 ## Steps for using the provided overlays on the RFSoC4x2
 (real-time phase correction and averaging for a detuning of 20 kHz +- 5%)
 
