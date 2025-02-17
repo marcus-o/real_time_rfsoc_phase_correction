@@ -50,3 +50,10 @@ cd location/real_time_rfsoc_phase_correction/vivado/
 source base.tcl
 ```
 - generate the bitstream
+
+## Authors
+Validation and Experimentation by A. Eber, M. Schultze, B. Bernhardt, M. Ossiander. Code by M. Ossiander.
+
+## License and Funding
+The code in this repository may be reused under a CC BY-NC 4.0 license ( https://creativecommons.org/licenses/by-nc/4.0/ ).
+The authors gratefully acknowledge support from NAWI Graz. B.B. acknowledges funding from the European Union (ERC HORIZON EUROPE 947288 ELFIS). M.O. acklowledges funding from the European Union (grant agreement 101076933 EUVORAM). The views and opinions expressed are, however, those of the author(s) only and do not necessarily reflect those of the European Union or the European Research Council Executive Agency. Neither the European Union nor the granting authority can be held responsible for them.
