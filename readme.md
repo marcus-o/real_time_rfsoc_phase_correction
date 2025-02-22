@@ -44,7 +44,7 @@ vitis_hls build.tcl
 ```
 
 4. generate the vivado overlay project and bitstream:
-- open vivado and switch the working directory to the vivado directory of this repository, e.g.:
+- open vivado and, in the tcl console, switch the working directory to the vivado directory of this repository, e.g.:
 ```
 cd location/real_time_rfsoc_phase_correction/vivado/
 ```
@@ -52,7 +52,19 @@ cd location/real_time_rfsoc_phase_correction/vivado/
 ```
 source base.tcl
 ```
-- generate the bitstream
+- click generate the bitstream
+
+4b. generate a vivado test board to simulate if the phase correction works:
+- open vivado and, in the tcl console, switch the working directory to the vivado directory of this repository, e.g.:
+```
+cd location/real_time_rfsoc_phase_correction/vivado/
+```
+- create the test board using the test.tcl file:
+```
+source test.tcl
+```
+- clich simulate, run simulation
+
 
 ## Authors
 Validation and Experimentation by A. Eber, M. Schultze, B. Bernhardt, M. Ossiander. Code by M. Ossiander.
