@@ -34,7 +34,7 @@ folder (create the folder if it doesn't exist).
 
 3. build the Vitis HLS ip: for each subfolder in the vitis_hls folder:
 - in a console, change the working directory to the subfolder
-- to make a vitis_hls console, run (for unix there will be a similar command):
+- to make a vitis_hls console, run (for unix there will be a similar shell script):
 ```
 (xilinx install folder)\Vitis_HLS\2022.1\settings64.bat
 ```
@@ -63,7 +63,7 @@ cd location/real_time_rfsoc_phase_correction/vivado/
 ```
 source test.tcl
 ```
-- clich simulate, run simulation
+- click simulate, run simulation
 
 
 ## Authors
