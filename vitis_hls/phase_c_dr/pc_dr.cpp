@@ -252,7 +252,7 @@ void measure_worker(
 	cd.start_sending_time = fp_time(center_time_observed_exact - fp_long(retain_samples/2)*fp_long(sampling_time_unit));
 	out_correction_data_q.write(cd);
 
-	if((cnt_proc_loops > 0) and (!out_log_data_q.full())){
+	if(cnt_proc_loops > 0){
 		log_data_packet ld;
 		ld.data.delta_time = delta_time;
 		ld.data.phase = center_phase_observed_pi;
@@ -312,7 +312,7 @@ void process_worker(
 		// start up, only runs one time in the beginning
 		// wait for correction data
 		cd = in_correction_data_q.read();
-		// first time has not enough info
+		// first ifg could be incomplete (discard)
 		ready1 = true;
 	}else if(!ready2){
 		// start up, only runs one time in the beginning
@@ -361,14 +361,14 @@ void process_worker(
 
 		// used to send unaveraged data (full data stream)
 		// corrected data
-
-		// check if the down sampled signal has a data point between the last two samples
+		// same logic as above
 		if(time_current >= sampling_time_current2)
 		{
 			// if yes, interpolate
 			fp time_left = sampling_time_current2 - (time_current - 1); //-t_unit);
 			fp_compl interp = prev_inc_corr + (inc_corr - prev_inc_corr) * time_left; // * t_unit_inv;
 			sampling_time_current2 = sampling_time_current2 + cd.sampling_time_unit;
+
 			bool last = (orig_corrected_sent_samples == 1);
 			if(orig_corrected_stage==0)
 				out_orig_corrected.v1 = adc_data_compl(adc_data(interp.real()), adc_data(interp.imag()));
