@@ -12,13 +12,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
-      <ZoomEndTime time="279.430362 us"></ZoomEndTime>
-      <Cursor1Time time="810.027631 us"></Cursor1Time>
+      <ZoomStartTime time="245,980.542 ns"></ZoomStartTime>
+      <ZoomEndTime time="246,220.957 ns"></ZoomEndTime>
+      <Cursor1Time time="246,019.599 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="70"></ValueColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="16" />
    <wvobject fp_name="/test/test_bd_i/test_bd_i/sim_clk_gen_0/clk" type="logic">
@@ -91,8 +91,8 @@
       <obj_property name="ObjectShortName">ifg1_q_num_data_valid[7:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/test/test_bd_i/test_bd_i/pc_dr_0/inst/process_worker_U0/correction_data1_q_dout" type="array">
-      <obj_property name="ElementShortName">correction_data1_q_dout[241:0]</obj_property>
-      <obj_property name="ObjectShortName">correction_data1_q_dout[241:0]</obj_property>
+      <obj_property name="ElementShortName">correction_data1_q_dout[303:0]</obj_property>
+      <obj_property name="ObjectShortName">correction_data1_q_dout[303:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/test/test_bd_i/test_bd_i/pc_dr_0/inst/process_worker_U0/correction_data1_q_num_data_valid" type="array">
       <obj_property name="ElementShortName">correction_data1_q_num_data_valid[3:0]</obj_property>
@@ -114,11 +114,6 @@
       <obj_property name="ElementShortName">avg_q_num_data_valid[7:0]</obj_property>
       <obj_property name="ObjectShortName">avg_q_num_data_valid[7:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/test/test_bd_i/test_bd_i/dump_6/inst/cnt1_V" type="array">
-      <obj_property name="ElementShortName">cnt1_V[63:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt1_V[63:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
    <wvobject fp_name="/test/test_bd_i/test_bd_i/pc_dr_0/out_q" type="protoinst">
       <obj_property name="children_use_element_short_name">true</obj_property>
       <obj_property name="WaveformStyle">STYLE_ENUM_TRANSACTION</obj_property>
@@ -136,21 +131,38 @@
       <obj_property name="ObjectShortName">out_q</obj_property>
       <obj_property name="isExpanded"></obj_property>
    </wvobject>
-   <wvobject fp_name="/test/test_bd_i/test_bd_i/dump_8/in_stream" type="protoinst">
+   <wvobject fp_name="/test/test_bd_i/test_bd_i/pc_dr_0/out_orig_q" type="protoinst">
       <obj_property name="children_use_element_short_name">true</obj_property>
       <obj_property name="WaveformStyle">STYLE_ENUM_TRANSACTION</obj_property>
       <obj_property name="EnumTransactionColorTable">fff,fff=blank</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
       <obj_property name="CustomSignalColor">#00E600</obj_property>
-      <obj_property name="Render_Data">/test/test_bd_i/test_bd_i/dump_8/in_stream.streamWaveData</obj_property>
+      <obj_property name="Render_Data">/test/test_bd_i/test_bd_i/pc_dr_0/out_orig_q.streamWaveData</obj_property>
       <obj_property name="Number_Overlay">2</obj_property>
-      <obj_property name="Overlay_Object_0">/test/test_bd_i/test_bd_i/dump_8/in_stream.linkStarve</obj_property>
+      <obj_property name="Overlay_Object_0">/test/test_bd_i/test_bd_i/pc_dr_0/out_orig_q.linkStarve</obj_property>
       <obj_property name="Overlay_Color_0">#99E600</obj_property>
-      <obj_property name="Overlay_Object_1">/test/test_bd_i/test_bd_i/dump_8/in_stream.linkStall</obj_property>
+      <obj_property name="Overlay_Object_1">/test/test_bd_i/test_bd_i/pc_dr_0/out_orig_q.linkStall</obj_property>
       <obj_property name="Overlay_Color_1">#E64C00</obj_property>
-      <obj_property name="Detail_Data">/test/test_bd_i/test_bd_i/dump_8/in_stream.streamTooltipData</obj_property>
-      <obj_property name="ElementShortName">in_stream</obj_property>
-      <obj_property name="ObjectShortName">in_stream</obj_property>
+      <obj_property name="Detail_Data">/test/test_bd_i/test_bd_i/pc_dr_0/out_orig_q.streamTooltipData</obj_property>
+      <obj_property name="ElementShortName">out_orig_q</obj_property>
+      <obj_property name="ObjectShortName">out_orig_q</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject fp_name="/test/test_bd_i/test_bd_i/pc_dr_0/out_orig_corrected_q" type="protoinst">
+      <obj_property name="children_use_element_short_name">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_ENUM_TRANSACTION</obj_property>
+      <obj_property name="EnumTransactionColorTable">fff,fff=blank</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="CustomSignalColor">#00E600</obj_property>
+      <obj_property name="Render_Data">/test/test_bd_i/test_bd_i/pc_dr_0/out_orig_corrected_q.streamWaveData</obj_property>
+      <obj_property name="Number_Overlay">2</obj_property>
+      <obj_property name="Overlay_Object_0">/test/test_bd_i/test_bd_i/pc_dr_0/out_orig_corrected_q.linkStarve</obj_property>
+      <obj_property name="Overlay_Color_0">#99E600</obj_property>
+      <obj_property name="Overlay_Object_1">/test/test_bd_i/test_bd_i/pc_dr_0/out_orig_corrected_q.linkStall</obj_property>
+      <obj_property name="Overlay_Color_1">#E64C00</obj_property>
+      <obj_property name="Detail_Data">/test/test_bd_i/test_bd_i/pc_dr_0/out_orig_corrected_q.streamTooltipData</obj_property>
+      <obj_property name="ElementShortName">out_orig_corrected_q</obj_property>
+      <obj_property name="ObjectShortName">out_orig_corrected_q</obj_property>
       <obj_property name="isExpanded"></obj_property>
    </wvobject>
 </wave_config>

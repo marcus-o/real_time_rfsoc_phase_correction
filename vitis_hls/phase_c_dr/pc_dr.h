@@ -168,6 +168,7 @@ void pc_dr(
 		hls::stream<adc_data_two_val> &in_q,
 		hls::stream<adc_data_double_length_compl_2sampl_packet> &out_q,
 		hls::stream<ap_int<32>> &avgs_q,
-		hls::stream<log_data_packet> &out_log_data_q//,
-		//hls::stream<adc_data_compl_4sampl_packet> &out_orig_q
+		hls::stream<log_data_packet> &out_log_data_q,
+		hls::stream<adc_data_compl_4sampl_packet> &out_orig_q,
+		hls::stream<adc_data_compl_4sampl_packet> &out_orig_q_corrected
 		);

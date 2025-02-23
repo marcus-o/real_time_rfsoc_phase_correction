@@ -35,7 +35,7 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 ################################################################
 
 # To test this script, run the following commands from Vivado Tcl console:
-# source test_bd.tcl
+# source test_bd_script.tcl
 
 # If there is no project opened, this script will create a
 # project, but make sure you do not have an existing project
@@ -201,6 +201,12 @@ proc create_root_design { parentCell } {
   # Create instance: axi_dump_1, and set properties
   set axi_dump_1 [ create_bd_cell -type ip -vlnv xilinx.com:hls:axi_dump:1.0 axi_dump_1 ]
 
+  # Create instance: axi_dump_2, and set properties
+  set axi_dump_2 [ create_bd_cell -type ip -vlnv xilinx.com:hls:axi_dump:1.0 axi_dump_2 ]
+
+  # Create instance: axi_dump_3, and set properties
+  set axi_dump_3 [ create_bd_cell -type ip -vlnv xilinx.com:hls:axi_dump:1.0 axi_dump_3 ]
+
   # Create instance: const_config_writer_0, and set properties
   set const_config_writer_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:const_config_writer:1.0 const_config_writer_0 ]
 
@@ -220,12 +226,14 @@ proc create_root_design { parentCell } {
   # Create interface connections
   connect_bd_intf_net -intf_net const_config_writer_0_config_out_q [get_bd_intf_pins const_config_writer_0/config_out_q] [get_bd_intf_pins pc_dr_0/avgs_q]
   connect_bd_intf_net -intf_net pc_dr_0_out_log_data_q [get_bd_intf_pins axi_dump_1/in_stream] [get_bd_intf_pins pc_dr_0/out_log_data_q]
+  connect_bd_intf_net -intf_net pc_dr_0_out_orig_corrected_q [get_bd_intf_pins axi_dump_3/in_stream] [get_bd_intf_pins pc_dr_0/out_orig_corrected_q]
+  connect_bd_intf_net -intf_net pc_dr_0_out_orig_q [get_bd_intf_pins axi_dump_2/in_stream] [get_bd_intf_pins pc_dr_0/out_orig_q]
   connect_bd_intf_net -intf_net pc_dr_0_out_q [get_bd_intf_pins axi_dump_0/in_stream] [get_bd_intf_pins pc_dr_0/out_q]
   connect_bd_intf_net -intf_net saturate_stream_dr_0_out_q [get_bd_intf_pins pc_dr_0/in_q] [get_bd_intf_pins saturate_stream_dr_0/out_q]
 
   # Create port connections
-  connect_bd_net -net ap_clk_0_1 [get_bd_pins axi_dump_0/ap_clk] [get_bd_pins axi_dump_1/ap_clk] [get_bd_pins const_config_writer_0/ap_clk] [get_bd_pins pc_dr_0/ap_clk] [get_bd_pins saturate_stream_dr_0/ap_clk] [get_bd_pins sim_clk_gen_0/clk]
-  connect_bd_net -net ap_rst_n_0_1 [get_bd_pins axi_dump_0/ap_rst_n] [get_bd_pins axi_dump_1/ap_rst_n] [get_bd_pins const_config_writer_0/ap_rst_n] [get_bd_pins pc_dr_0/ap_rst_n] [get_bd_pins saturate_stream_dr_0/ap_rst_n] [get_bd_pins sim_clk_gen_0/sync_rst]
+  connect_bd_net -net ap_clk_0_1 [get_bd_pins axi_dump_0/ap_clk] [get_bd_pins axi_dump_1/ap_clk] [get_bd_pins axi_dump_2/ap_clk] [get_bd_pins axi_dump_3/ap_clk] [get_bd_pins const_config_writer_0/ap_clk] [get_bd_pins pc_dr_0/ap_clk] [get_bd_pins saturate_stream_dr_0/ap_clk] [get_bd_pins sim_clk_gen_0/clk]
+  connect_bd_net -net ap_rst_n_0_1 [get_bd_pins axi_dump_0/ap_rst_n] [get_bd_pins axi_dump_1/ap_rst_n] [get_bd_pins axi_dump_2/ap_rst_n] [get_bd_pins axi_dump_3/ap_rst_n] [get_bd_pins const_config_writer_0/ap_rst_n] [get_bd_pins pc_dr_0/ap_rst_n] [get_bd_pins saturate_stream_dr_0/ap_rst_n] [get_bd_pins sim_clk_gen_0/sync_rst]
 
   # Create address segments
 

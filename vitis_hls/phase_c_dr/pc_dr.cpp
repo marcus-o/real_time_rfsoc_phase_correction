@@ -274,14 +274,16 @@ void measure_worker(
 void process_worker(
 		hls::stream<adc_data_compl, wait_buf_size> &in_q,
 		hls::stream<correction_data_type, 5> &in_correction_data_q,
-		hls::stream<adc_data_compl, 100> &out_q//,
-		//hls::stream<adc_data_compl_4sampl_packet> &out_orig_q
+		hls::stream<adc_data_compl, 100> &out_q,
+		hls::stream<adc_data_compl_4sampl_packet> &out_orig_q,
+		hls::stream<adc_data_compl_4sampl_packet> &out_orig_corrected_q
 		){
 	#pragma HLS INTERFACE mode=ap_ctrl_none port=return
 	#pragma HLS INTERFACE ap_fifo register port = in_q depth=wait_buf_size
 	#pragma HLS INTERFACE ap_fifo register port = in_correction_data_q depth=5
 	#pragma HLS INTERFACE ap_fifo register port = out_q depth=100
-	//#pragma HLS INTERFACE axis register port = out_orig_q depth=2
+	#pragma HLS INTERFACE axis register port = out_orig_q depth=2
+	#pragma HLS INTERFACE axis register port = out_orig_corrected_q depth=2
 	#pragma HLS PIPELINE II=1
 
     static bool ready1 = false;
@@ -299,7 +301,11 @@ void process_worker(
 
     static int orig_sent_samples = orig_retain_samples;
     static adc_data_compl_4sampl out_orig;
+    static int orig_corrected_sent_samples = orig_retain_samples;
+    static adc_data_compl_4sampl out_orig_corrected;
+
     static int orig_stage;
+    static int orig_corrected_stage;
     static bool write;
 
 	if(!ready1){
@@ -352,40 +358,41 @@ void process_worker(
 			out_q.write(adc_data_compl(adc_data(interp.real()), adc_data(interp.imag())));
 		}
 
-		/*
+
 		// used to send unaveraged data (full data stream)
 		// corrected data
-		if(0){
-			// check if the down sampled signal has a data point between the last two samples
-			if(time_current >= sampling_time_current2)
-			{
-				// if yes, interpolate
-				fp time_left = sampling_time_current2 - (time_current - 1); //-t_unit);
-				fp_compl interp = prev_inc_corr + (inc_corr - prev_inc_corr) * time_left; // * t_unit_inv;
-				sampling_time_current2 = sampling_time_current2 + cd.sampling_time_unit;
-				bool last = (orig_sent_samples == 1);
-				if(orig_stage==0)
-					out_orig.v1 = adc_data_compl(adc_data(interp.real()), adc_data(interp.imag()));
-				else if (orig_stage==1)
-					out_orig.v2 = adc_data_compl(adc_data(interp.real()), adc_data(interp.imag()));
-				else if(orig_stage==2){
-					out_orig.v3 = adc_data_compl(adc_data(interp.real()), adc_data(interp.imag()));
-				}
-				else if(orig_stage==3){
-					adc_data_compl_4sampl_packet out1;
-					out_orig.v4 = adc_data_compl(adc_data(interp.real()), adc_data(interp.imag()));
-					out1.data = out_orig;
-					out1.keep = -1;
-					out1.strb = -1;
-					out1.last = last ? 1 : 0;
-					out_orig_q.write(out1);
-				}
-				orig_stage = (orig_stage==3) ? 0 : orig_stage + 1;
-				orig_sent_samples = last ? orig_retain_samples : orig_sent_samples - 1;
+
+		// check if the down sampled signal has a data point between the last two samples
+		if(time_current >= sampling_time_current2)
+		{
+			// if yes, interpolate
+			fp time_left = sampling_time_current2 - (time_current - 1); //-t_unit);
+			fp_compl interp = prev_inc_corr + (inc_corr - prev_inc_corr) * time_left; // * t_unit_inv;
+			sampling_time_current2 = sampling_time_current2 + cd.sampling_time_unit;
+			bool last = (orig_corrected_sent_samples == 1);
+			if(orig_corrected_stage==0)
+				out_orig_corrected.v1 = adc_data_compl(adc_data(interp.real()), adc_data(interp.imag()));
+			else if (orig_corrected_stage==1)
+				out_orig_corrected.v2 = adc_data_compl(adc_data(interp.real()), adc_data(interp.imag()));
+			else if(orig_corrected_stage==2){
+				out_orig_corrected.v3 = adc_data_compl(adc_data(interp.real()), adc_data(interp.imag()));
 			}
+			else if(orig_corrected_stage==3){
+				adc_data_compl_4sampl_packet out1;
+				out_orig_corrected.v4 = adc_data_compl(adc_data(interp.real()), adc_data(interp.imag()));
+				out1.data = out_orig_corrected;
+				out1.keep = -1;
+				out1.strb = -1;
+				out1.last = last ? 1 : 0;
+				out_orig_corrected_q.write(out1);
+			}
+			orig_corrected_stage = (orig_corrected_stage==3) ? 0 : orig_corrected_stage + 1;
+			orig_corrected_sent_samples = last ? orig_retain_samples : orig_corrected_sent_samples - 1;
 		}
+
+		// used to send unaveraged data (full data stream)
 		// uncorrected data
-		if(0){
+		{
 			bool last = (orig_sent_samples == 1);
 			if(orig_stage==0)
 				out_orig.v1 = adc_data_compl(adc_data(in_val.real()), adc_data(in_val.imag()));
@@ -406,7 +413,7 @@ void process_worker(
 			orig_stage = (orig_stage==3) ? 0 : orig_stage + 1;
 			orig_sent_samples = last ? orig_retain_samples : orig_sent_samples - 1;
 		}
-		*/
+
 		// data for the next iteration
 		prev_inc_corr = inc_corr;
 		time_current = time_current + 1; //+t_unit;
@@ -485,8 +492,9 @@ void pc_dr(
 		hls::stream<adc_data_two_val> &in_q,
 		hls::stream<adc_data_double_length_compl_2sampl_packet> &out_q,
 		hls::stream<ap_int<32>> &avgs_q,
-		hls::stream<log_data_packet> &out_log_data_q//,
-		//hls::stream<adc_data_compl_4sampl_packet> &out_orig_q
+		hls::stream<log_data_packet> &out_log_data_q,
+		hls::stream<adc_data_compl_4sampl_packet> &out_orig_q,
+		hls::stream<adc_data_compl_4sampl_packet> &out_orig_corrected_q
 		){
 	#pragma HLS INTERFACE mode=ap_ctrl_none port=return
 
@@ -494,7 +502,8 @@ void pc_dr(
 	#pragma HLS INTERFACE axis register port = out_q depth=2
 	#pragma HLS INTERFACE axis register port = avgs_q depth=2
 	#pragma HLS INTERFACE axis register port = out_log_data_q depth=2
-	// #pragma HLS INTERFACE axis register port = out_orig_q depth=2
+	#pragma HLS INTERFACE axis register port = out_orig_q depth=2
+	#pragma HLS INTERFACE axis register port = out_orig_corrected_q depth=2
 
 	// launch all parallel tasks and their communication
 	hls_thread_local hls::stream<adc_data_compl, 100> sig_h_q;
@@ -509,9 +518,10 @@ void pc_dr(
 	hls_thread_local hls::task t3(measure_worker, ifg1_q, ifg1_time_q, correction_data1_q, out_log_data_q);
 
 	hls_thread_local hls::stream<adc_data_compl, 100> avg_q;
-	hls_thread_local hls::task t4(process_worker, proc1_buf_out_q, correction_data1_q, avg_q);
+	//hls_thread_local hls::task t4(process_worker, proc1_buf_out_q, correction_data1_q, avg_q);
 	// for sending full data stream
 	//hls_thread_local hls::task t4(process_worker, proc1_buf_out_q, correction_data1_q, avg_q, out_orig_q);
+	hls_thread_local hls::task t4(process_worker, proc1_buf_out_q, correction_data1_q, avg_q, out_orig_q, out_orig_corrected_q);
 
 	hls_thread_local hls::task t5(avg_worker, avg_q, out_q, avgs_q);
 
