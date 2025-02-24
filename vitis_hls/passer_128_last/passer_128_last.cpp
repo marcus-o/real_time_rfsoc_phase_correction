@@ -1,59 +1,5 @@
 #include "passer_128_last.h"
 
-/*
-void passer_128_last(
-		hls::stream<data_packet> &in_q,
-		hls::stream<data_packet> &out_q,
-		hls::stream<config1> &config_in_q
-		){
-
-	#pragma HLS INTERFACE mode=ap_ctrl_none port=return
-
-	#pragma HLS INTERFACE axis register port=in_q depth=1
-	#pragma HLS INTERFACE axis register port=out_q depth=1
-	#pragma HLS INTERFACE axis register port=config_in_q depth=1
-
-	#pragma HLS PIPELINE II=1
-
-	static ap_int<32> send_local = 0;
-	static bool start = false;
-
-	if (!start){
-		// wait if supposed to pass
-		config1 config_temp = config_in_q.read();
-		send_local = config_temp.send;
-		start = true;
-	}else{
-		if(send_local){
-			// pass
-			out_q.write(in_q.read());
-		}else{
-			in_q.read();
-		}
-	}
-}
-
-void passer_128_last(
-		hls::stream<data_packet> &in_q,
-		hls::stream<data_packet> &out_q,
-		ap_int<32> *send
-		){
-
-	#pragma HLS INTERFACE mode=ap_ctrl_none port=return
-
-	#pragma HLS INTERFACE axis register port=in_q depth=1
-	#pragma HLS INTERFACE axis register port=out_q depth=1
-	#pragma HLS INTERFACE s_axilite port=send bundle=a
-
-	#pragma HLS PIPELINE II=1
-
-	if(!(*send)){
-		in_q.read();
-	}else{
-		out_q.write(in_q.read());
-	}
-}*/
-
 void in_data_worker(
 		hls::stream<data_packet> &in_data_q,
 		hls::stream<data_last, 10> &sig_data_q
@@ -72,16 +18,22 @@ void in_data_worker(
 }
 
 void in_config_worker(
-		hls::stream<config1> &in_config_q,
+		ap_int<32> *send,
 		hls::stream<config1, 10> &sig_config_q
 		){
 
 	#pragma HLS INTERFACE mode=ap_ctrl_none port=return
-	#pragma HLS INTERFACE axis register port=in_config_q
+	#pragma HLS INTERFACE s_axilite register port=send bundle=a
 	#pragma HLS INTERFACE ap_fifo register port=sig_config_q
-	#pragma HLS PIPELINE II=1 style=frp
 
-	sig_config_q.write(in_config_q.read());
+	static ap_int<32> send_local = 0;
+
+	if(send_local != *send){
+		send_local = *send;
+		config1 config_temp;
+		config_temp.send = *send;
+		sig_config_q.write(config_temp);
+	}
 }
 
 void out_worker(
@@ -119,14 +71,14 @@ void out_worker(
 // main function
 void passer_128_last(
 		hls::stream<data_packet> &in_data_q,
-		hls::stream<config1> &in_config_q,
-		hls::stream<data_packet> &out_q
+		hls::stream<data_packet> &out_q,
+		ap_int<32> *send
 		){
 
 	#pragma HLS INTERFACE mode=ap_ctrl_none port=return
 	#pragma HLS INTERFACE axis register port=in_data_q
-	#pragma HLS INTERFACE axis register port=in_config_q
 	#pragma HLS INTERFACE axis register port=out_q
+	#pragma HLS INTERFACE s_axilite register port=send bundle=a
 
 	// uses threads to allow inserting a 10 sample wide fifo
 	// otherwise a stall occurs for the averaged data
@@ -134,7 +86,6 @@ void passer_128_last(
 	hls_thread_local hls::stream<data_last, 10> sig_data_q;
 	hls_thread_local hls::stream<config1, 10> sig_config_q;
 	hls_thread_local hls::task t1(in_data_worker, in_data_q, sig_data_q);
-	hls_thread_local hls::task t2(in_config_worker, in_config_q, sig_config_q);
+	hls_thread_local hls::task t2(in_config_worker, send, sig_config_q);
 	hls_thread_local hls::task t3(out_worker, sig_data_q, sig_config_q, out_q);
-
 }

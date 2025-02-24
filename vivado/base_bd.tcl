@@ -128,7 +128,7 @@ xilinx.com:ip:clk_wiz:6.0\
 xilinx.com:ip:proc_sys_reset:5.0\
 xilinx.com:ip:zynq_ultra_ps_e:3.4\
 xilinx.com:hls:passer_config_writer:1.0\
-xilinx.com:hls:passer_double_rate:1.0\
+xilinx.com:hls:passer_32:1.0\
 xilinx.com:hls:pc_dr:1.0\
 xilinx.com:ip:usp_rf_data_converter:2.6\
 xilinx.com:hls:saturate_stream_dr:1.0\
@@ -321,18 +321,6 @@ proc create_hier_cell_passers_and_dma { parentCell nameHier } {
   # Create instance: output_passer_avg, and set properties
   set output_passer_avg [ create_bd_cell -type ip -vlnv xilinx.com:hls:passer_128_last:1.0 output_passer_avg ]
 
-  # Create instance: output_passer_config_writer_avg, and set properties
-  set output_passer_config_writer_avg [ create_bd_cell -type ip -vlnv xilinx.com:hls:passer_config_writer:1.0 output_passer_config_writer_avg ]
-
-  # Create instance: output_passer_config_writer_log, and set properties
-  set output_passer_config_writer_log [ create_bd_cell -type ip -vlnv xilinx.com:hls:passer_config_writer:1.0 output_passer_config_writer_log ]
-
-  # Create instance: output_passer_config_writer_orig, and set properties
-  set output_passer_config_writer_orig [ create_bd_cell -type ip -vlnv xilinx.com:hls:passer_config_writer:1.0 output_passer_config_writer_orig ]
-
-  # Create instance: output_passer_config_writer_orig_corrected, and set properties
-  set output_passer_config_writer_orig_corrected [ create_bd_cell -type ip -vlnv xilinx.com:hls:passer_config_writer:1.0 output_passer_config_writer_orig_corrected ]
-
   # Create instance: output_passer_log, and set properties
   set output_passer_log [ create_bd_cell -type ip -vlnv xilinx.com:hls:passer_128_last:1.0 output_passer_log ]
 
@@ -354,34 +342,30 @@ proc create_hier_cell_passers_and_dma { parentCell nameHier } {
   connect_bd_intf_net -intf_net axi_interconnect_hpm_2_M01_AXI [get_bd_intf_pins axi_dma_orig_corrected/S_AXI_LITE] [get_bd_intf_pins axi_interconnect_hpm_2/M01_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_hpm_2_M02_AXI [get_bd_intf_pins axi_dma_avg/S_AXI_LITE] [get_bd_intf_pins axi_interconnect_hpm_2/M02_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_hpm_2_M03_AXI [get_bd_intf_pins axi_dma_log/S_AXI_LITE] [get_bd_intf_pins axi_interconnect_hpm_2/M03_AXI]
-  connect_bd_intf_net -intf_net axi_interconnect_hpm_3_M00_AXI [get_bd_intf_pins axi_interconnect_hpm_3/M00_AXI] [get_bd_intf_pins output_passer_config_writer_log/s_axi_a]
-  connect_bd_intf_net -intf_net axi_interconnect_hpm_3_M01_AXI [get_bd_intf_pins axi_interconnect_hpm_3/M01_AXI] [get_bd_intf_pins output_passer_config_writer_orig/s_axi_a]
-  connect_bd_intf_net -intf_net axi_interconnect_hpm_3_M02_AXI [get_bd_intf_pins axi_interconnect_hpm_3/M02_AXI] [get_bd_intf_pins output_passer_config_writer_avg/s_axi_a]
-  connect_bd_intf_net -intf_net axi_interconnect_hpm_3_M03_AXI [get_bd_intf_pins axi_interconnect_hpm_3/M03_AXI] [get_bd_intf_pins output_passer_config_writer_orig_corrected/s_axi_a]
+  connect_bd_intf_net -intf_net axi_interconnect_hpm_3_M00_AXI [get_bd_intf_pins axi_interconnect_hpm_3/M00_AXI] [get_bd_intf_pins output_passer_orig/s_axi_a]
+  connect_bd_intf_net -intf_net axi_interconnect_hpm_3_M01_AXI [get_bd_intf_pins axi_interconnect_hpm_3/M01_AXI] [get_bd_intf_pins output_passer_orig_corrected/s_axi_a]
+  connect_bd_intf_net -intf_net axi_interconnect_hpm_3_M02_AXI [get_bd_intf_pins axi_interconnect_hpm_3/M02_AXI] [get_bd_intf_pins output_passer_avg/s_axi_a]
+  connect_bd_intf_net -intf_net axi_interconnect_hpm_3_M03_AXI [get_bd_intf_pins axi_interconnect_hpm_3/M03_AXI] [get_bd_intf_pins output_passer_log/s_axi_a]
   connect_bd_intf_net -intf_net axi_interconnect_hps1_M00_AXI [get_bd_intf_pins M00_AXI] [get_bd_intf_pins axi_interconnect_hps/M00_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_ps_M03_AXI [get_bd_intf_pins S00_AXI] [get_bd_intf_pins axi_interconnect_hpm_2/S00_AXI]
   connect_bd_intf_net -intf_net axis_clock_converter_avg_M_AXIS [get_bd_intf_pins axi_dma_avg/S_AXIS_S2MM] [get_bd_intf_pins axis_clock_converter_avg/M_AXIS]
   connect_bd_intf_net -intf_net axis_clock_converter_log_M_AXIS [get_bd_intf_pins axi_dma_log/S_AXIS_S2MM] [get_bd_intf_pins axis_clock_converter_log/M_AXIS]
   connect_bd_intf_net -intf_net axis_clock_converter_orig1_M_AXIS [get_bd_intf_pins axi_dma_orig_corrected/S_AXIS_S2MM] [get_bd_intf_pins axis_clock_converter_orig_corrected/M_AXIS]
   connect_bd_intf_net -intf_net axis_clock_converter_orig_M_AXIS [get_bd_intf_pins axi_dma_orig/S_AXIS_S2MM] [get_bd_intf_pins axis_clock_converter_orig/M_AXIS]
+  connect_bd_intf_net -intf_net in_q1_1 [get_bd_intf_pins in_q1] [get_bd_intf_pins output_passer_orig/in_data_q]
+  connect_bd_intf_net -intf_net in_q2_1 [get_bd_intf_pins in_q2] [get_bd_intf_pins output_passer_orig_corrected/in_data_q]
   connect_bd_intf_net -intf_net in_q3_1 [get_bd_intf_pins in_q3] [get_bd_intf_pins output_passer_log/in_data_q]
   connect_bd_intf_net -intf_net in_q_1 [get_bd_intf_pins in_q] [get_bd_intf_pins output_passer_avg/in_data_q]
-  connect_bd_intf_net -intf_net output_passer_avg2_out_q [get_bd_intf_pins axis_clock_converter_orig_corrected/S_AXIS] [get_bd_intf_pins output_passer_orig_corrected/out_q]
-  connect_bd_intf_net -intf_net output_passer_avg_out_q [get_bd_intf_pins axis_clock_converter_orig/S_AXIS] [get_bd_intf_pins output_passer_orig/out_q]
-  connect_bd_intf_net -intf_net output_passer_avg_out_q1 [get_bd_intf_pins axis_clock_converter_avg/S_AXIS] [get_bd_intf_pins output_passer_avg/out_q]
-  connect_bd_intf_net -intf_net output_passer_config_writer_avg_config_out_q [get_bd_intf_pins output_passer_avg/in_config_q] [get_bd_intf_pins output_passer_config_writer_avg/config_out_q]
-  connect_bd_intf_net -intf_net output_passer_config_writer_log_config_out_q [get_bd_intf_pins output_passer_config_writer_log/config_out_q] [get_bd_intf_pins output_passer_log/in_config_q]
-  connect_bd_intf_net -intf_net output_passer_config_writer_orig_config_out_q [get_bd_intf_pins output_passer_config_writer_orig/config_out_q] [get_bd_intf_pins output_passer_orig/in_config_q]
-  connect_bd_intf_net -intf_net output_passer_config_writer_orig_corrected_1_config_out_q [get_bd_intf_pins output_passer_config_writer_orig_corrected/config_out_q] [get_bd_intf_pins output_passer_orig_corrected/in_config_q]
   connect_bd_intf_net -intf_net output_passer_log_out_q [get_bd_intf_pins axis_clock_converter_log/S_AXIS] [get_bd_intf_pins output_passer_log/out_q]
-  connect_bd_intf_net -intf_net pc_dr_0_out_orig_corrected_q [get_bd_intf_pins in_q2] [get_bd_intf_pins output_passer_orig_corrected/in_data_q]
-  connect_bd_intf_net -intf_net pc_dr_0_out_orig_q [get_bd_intf_pins in_q1] [get_bd_intf_pins output_passer_orig/in_data_q]
+  connect_bd_intf_net -intf_net passer_128_last_0_out_q [get_bd_intf_pins axis_clock_converter_orig/S_AXIS] [get_bd_intf_pins output_passer_orig/out_q]
+  connect_bd_intf_net -intf_net passer_128_last_0_out_q1 [get_bd_intf_pins axis_clock_converter_avg/S_AXIS] [get_bd_intf_pins output_passer_avg/out_q]
+  connect_bd_intf_net -intf_net passer_128_last_1_out_q [get_bd_intf_pins axis_clock_converter_orig_corrected/S_AXIS] [get_bd_intf_pins output_passer_orig_corrected/out_q]
 
   # Create port connections
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins m_axi_aresetn] [get_bd_pins axi_dma_avg/axi_resetn] [get_bd_pins axi_dma_log/axi_resetn] [get_bd_pins axi_dma_orig/axi_resetn] [get_bd_pins axi_dma_orig_corrected/axi_resetn] [get_bd_pins axi_interconnect_hpm_2/M00_ARESETN] [get_bd_pins axi_interconnect_hpm_2/M01_ARESETN] [get_bd_pins axi_interconnect_hpm_2/M02_ARESETN] [get_bd_pins axi_interconnect_hpm_2/M03_ARESETN] [get_bd_pins axi_interconnect_hps/ARESETN] [get_bd_pins axi_interconnect_hps/M00_ARESETN] [get_bd_pins axi_interconnect_hps/S00_ARESETN] [get_bd_pins axi_interconnect_hps/S01_ARESETN] [get_bd_pins axi_interconnect_hps/S02_ARESETN] [get_bd_pins axi_interconnect_hps/S03_ARESETN] [get_bd_pins axi_interconnect_hps/S04_ARESETN] [get_bd_pins axi_interconnect_hps/S05_ARESETN] [get_bd_pins axis_clock_converter_avg/m_axis_aresetn] [get_bd_pins axis_clock_converter_log/m_axis_aresetn] [get_bd_pins axis_clock_converter_orig/m_axis_aresetn] [get_bd_pins axis_clock_converter_orig_corrected/m_axis_aresetn]
-  connect_bd_net -net receiver_aresetn_adc0 [get_bd_pins s_axis_aresetn] [get_bd_pins axi_interconnect_hpm_3/M00_ARESETN] [get_bd_pins axi_interconnect_hpm_3/M01_ARESETN] [get_bd_pins axi_interconnect_hpm_3/M02_ARESETN] [get_bd_pins axi_interconnect_hpm_3/M03_ARESETN] [get_bd_pins axi_interconnect_hpm_3/S00_ARESETN] [get_bd_pins axis_clock_converter_avg/s_axis_aresetn] [get_bd_pins axis_clock_converter_log/s_axis_aresetn] [get_bd_pins axis_clock_converter_orig/s_axis_aresetn] [get_bd_pins axis_clock_converter_orig_corrected/s_axis_aresetn] [get_bd_pins output_passer_avg/ap_rst_n] [get_bd_pins output_passer_config_writer_avg/ap_rst_n] [get_bd_pins output_passer_config_writer_log/ap_rst_n] [get_bd_pins output_passer_config_writer_orig/ap_rst_n] [get_bd_pins output_passer_config_writer_orig_corrected/ap_rst_n] [get_bd_pins output_passer_log/ap_rst_n] [get_bd_pins output_passer_orig/ap_rst_n] [get_bd_pins output_passer_orig_corrected/ap_rst_n]
+  connect_bd_net -net receiver_aresetn_adc0 [get_bd_pins s_axis_aresetn] [get_bd_pins axi_interconnect_hpm_3/M00_ARESETN] [get_bd_pins axi_interconnect_hpm_3/M01_ARESETN] [get_bd_pins axi_interconnect_hpm_3/M02_ARESETN] [get_bd_pins axi_interconnect_hpm_3/M03_ARESETN] [get_bd_pins axi_interconnect_hpm_3/S00_ARESETN] [get_bd_pins axis_clock_converter_avg/s_axis_aresetn] [get_bd_pins axis_clock_converter_log/s_axis_aresetn] [get_bd_pins axis_clock_converter_orig/s_axis_aresetn] [get_bd_pins axis_clock_converter_orig_corrected/s_axis_aresetn] [get_bd_pins output_passer_avg/ap_rst_n] [get_bd_pins output_passer_log/ap_rst_n] [get_bd_pins output_passer_orig/ap_rst_n] [get_bd_pins output_passer_orig_corrected/ap_rst_n]
   connect_bd_net -net rst_ps8_0_99M_peripheral_aresetn [get_bd_pins s_axi_aresetn] [get_bd_pins axi_interconnect_hpm_2/ARESETN] [get_bd_pins axi_interconnect_hpm_2/S00_ARESETN] [get_bd_pins axi_interconnect_hpm_3/ARESETN]
-  connect_bd_net -net usp_rf_data_converter_0_clk_adc0 [get_bd_pins clk_adc0] [get_bd_pins axi_interconnect_hpm_3/M00_ACLK] [get_bd_pins axi_interconnect_hpm_3/M01_ACLK] [get_bd_pins axi_interconnect_hpm_3/M02_ACLK] [get_bd_pins axi_interconnect_hpm_3/M03_ACLK] [get_bd_pins axi_interconnect_hpm_3/S00_ACLK] [get_bd_pins axis_clock_converter_avg/s_axis_aclk] [get_bd_pins axis_clock_converter_log/s_axis_aclk] [get_bd_pins axis_clock_converter_orig/s_axis_aclk] [get_bd_pins axis_clock_converter_orig_corrected/s_axis_aclk] [get_bd_pins output_passer_avg/ap_clk] [get_bd_pins output_passer_config_writer_avg/ap_clk] [get_bd_pins output_passer_config_writer_log/ap_clk] [get_bd_pins output_passer_config_writer_orig/ap_clk] [get_bd_pins output_passer_config_writer_orig_corrected/ap_clk] [get_bd_pins output_passer_log/ap_clk] [get_bd_pins output_passer_orig/ap_clk] [get_bd_pins output_passer_orig_corrected/ap_clk]
+  connect_bd_net -net usp_rf_data_converter_0_clk_adc0 [get_bd_pins clk_adc0] [get_bd_pins axi_interconnect_hpm_3/M00_ACLK] [get_bd_pins axi_interconnect_hpm_3/M01_ACLK] [get_bd_pins axi_interconnect_hpm_3/M02_ACLK] [get_bd_pins axi_interconnect_hpm_3/M03_ACLK] [get_bd_pins axi_interconnect_hpm_3/S00_ACLK] [get_bd_pins axis_clock_converter_avg/s_axis_aclk] [get_bd_pins axis_clock_converter_log/s_axis_aclk] [get_bd_pins axis_clock_converter_orig/s_axis_aclk] [get_bd_pins axis_clock_converter_orig_corrected/s_axis_aclk] [get_bd_pins output_passer_avg/ap_clk] [get_bd_pins output_passer_log/ap_clk] [get_bd_pins output_passer_orig/ap_clk] [get_bd_pins output_passer_orig_corrected/ap_clk]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins s_axi_aclk] [get_bd_pins axi_interconnect_hpm_2/ACLK] [get_bd_pins axi_interconnect_hpm_2/S00_ACLK] [get_bd_pins axi_interconnect_hpm_3/ACLK]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins m_axi_aclk] [get_bd_pins axi_dma_avg/m_axi_s2mm_aclk] [get_bd_pins axi_dma_avg/s_axi_lite_aclk] [get_bd_pins axi_dma_log/m_axi_s2mm_aclk] [get_bd_pins axi_dma_log/s_axi_lite_aclk] [get_bd_pins axi_dma_orig/m_axi_s2mm_aclk] [get_bd_pins axi_dma_orig/m_axi_sg_aclk] [get_bd_pins axi_dma_orig/s_axi_lite_aclk] [get_bd_pins axi_dma_orig_corrected/m_axi_s2mm_aclk] [get_bd_pins axi_dma_orig_corrected/m_axi_sg_aclk] [get_bd_pins axi_dma_orig_corrected/s_axi_lite_aclk] [get_bd_pins axi_interconnect_hpm_2/M00_ACLK] [get_bd_pins axi_interconnect_hpm_2/M01_ACLK] [get_bd_pins axi_interconnect_hpm_2/M02_ACLK] [get_bd_pins axi_interconnect_hpm_2/M03_ACLK] [get_bd_pins axi_interconnect_hps/ACLK] [get_bd_pins axi_interconnect_hps/M00_ACLK] [get_bd_pins axi_interconnect_hps/S00_ACLK] [get_bd_pins axi_interconnect_hps/S01_ACLK] [get_bd_pins axi_interconnect_hps/S02_ACLK] [get_bd_pins axi_interconnect_hps/S03_ACLK] [get_bd_pins axi_interconnect_hps/S04_ACLK] [get_bd_pins axi_interconnect_hps/S05_ACLK] [get_bd_pins axis_clock_converter_avg/m_axis_aclk] [get_bd_pins axis_clock_converter_log/m_axis_aclk] [get_bd_pins axis_clock_converter_orig/m_axis_aclk] [get_bd_pins axis_clock_converter_orig_corrected/m_axis_aclk]
 
@@ -480,11 +464,8 @@ proc create_hier_cell_radio { parentCell nameHier } {
    CONFIG.NUM_MI {4} \
  ] $axi_interconnect_ps
 
-  # Create instance: input_passer_config_writer, and set properties
-  set input_passer_config_writer [ create_bd_cell -type ip -vlnv xilinx.com:hls:passer_config_writer:1.0 input_passer_config_writer ]
-
-  # Create instance: input_passer_double_rate, and set properties
-  set input_passer_double_rate [ create_bd_cell -type ip -vlnv xilinx.com:hls:passer_double_rate:1.0 input_passer_double_rate ]
+  # Create instance: input_passer, and set properties
+  set input_passer [ create_bd_cell -type ip -vlnv xilinx.com:hls:passer_32:1.0 input_passer ]
 
   # Create instance: passers_and_dma
   create_hier_cell_passers_and_dma $hier_obj passers_and_dma
@@ -619,32 +600,31 @@ proc create_hier_cell_radio { parentCell nameHier } {
   connect_bd_intf_net -intf_net adc0_clk_1 [get_bd_intf_pins adc0_clk] [get_bd_intf_pins rfdc/adc0_clk]
   connect_bd_intf_net -intf_net avgs_config_writer_config_out_q [get_bd_intf_pins avgs_config_writer/config_out_q] [get_bd_intf_pins pc_dr_0/num_avgs_q]
   connect_bd_intf_net -intf_net axi_hpm1_fpd_M02_AXI [get_bd_intf_pins S_AXI] [get_bd_intf_pins axi_interconnect_ps/S00_AXI]
-  connect_bd_intf_net -intf_net axi_interconnect_hpm_1_M00_AXI [get_bd_intf_pins axi_interconnect_hpm_1/M00_AXI] [get_bd_intf_pins input_passer_config_writer/s_axi_a]
-  connect_bd_intf_net -intf_net axi_interconnect_hpm_1_M01_AXI [get_bd_intf_pins avgs_config_writer/s_axi_a] [get_bd_intf_pins axi_interconnect_hpm_1/M01_AXI]
-  connect_bd_intf_net -intf_net axi_interconnect_hpm_1_M02_AXI [get_bd_intf_pins axi_interconnect_hpm_1/M02_AXI] [get_bd_intf_pins passers_and_dma/S00_AXI1]
+  connect_bd_intf_net -intf_net axi_interconnect_hpm_1_M00_AXI [get_bd_intf_pins avgs_config_writer/s_axi_a] [get_bd_intf_pins axi_interconnect_hpm_1/M00_AXI]
+  connect_bd_intf_net -intf_net axi_interconnect_hpm_1_M01_AXI [get_bd_intf_pins axi_interconnect_hpm_1/M01_AXI] [get_bd_intf_pins passers_and_dma/S00_AXI1]
+  connect_bd_intf_net -intf_net axi_interconnect_hpm_1_M02_AXI [get_bd_intf_pins axi_interconnect_hpm_1/M02_AXI] [get_bd_intf_pins input_passer/s_axi_a]
   connect_bd_intf_net -intf_net axi_interconnect_hps1_M00_AXI [get_bd_intf_pins M_AXI] [get_bd_intf_pins passers_and_dma/M00_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_ps_M01_AXI [get_bd_intf_pins axi_interconnect_hpm_1/S00_AXI] [get_bd_intf_pins axi_interconnect_ps/M01_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_ps_M02_AXI [get_bd_intf_pins axi_interconnect_ps/M02_AXI] [get_bd_intf_pins rfdc/s_axi]
   connect_bd_intf_net -intf_net axi_interconnect_ps_M03_AXI [get_bd_intf_pins axi_interconnect_ps/M03_AXI] [get_bd_intf_pins passers_and_dma/S00_AXI]
   connect_bd_intf_net -intf_net dac0_clk_1 [get_bd_intf_pins dac0_clk] [get_bd_intf_pins rfdc/dac0_clk]
-  connect_bd_intf_net -intf_net passer_config_writer_0_config_out_q [get_bd_intf_pins input_passer_config_writer/config_out_q] [get_bd_intf_pins input_passer_double_rate/config_in_q]
-  connect_bd_intf_net -intf_net passer_double_rate_0_out_q [get_bd_intf_pins input_passer_double_rate/out_q] [get_bd_intf_pins pc_dr_0/in_q]
+  connect_bd_intf_net -intf_net passer_32_0_out_q [get_bd_intf_pins input_passer/out_q] [get_bd_intf_pins pc_dr_0/in_q]
   connect_bd_intf_net -intf_net pc_dr_0_out_log_data_q [get_bd_intf_pins passers_and_dma/in_q3] [get_bd_intf_pins pc_dr_0/out_log_data_q]
   connect_bd_intf_net -intf_net pc_dr_0_out_orig_corrected_q [get_bd_intf_pins passers_and_dma/in_q2] [get_bd_intf_pins pc_dr_0/out_orig_corrected_q]
   connect_bd_intf_net -intf_net pc_dr_0_out_orig_q [get_bd_intf_pins passers_and_dma/in_q1] [get_bd_intf_pins pc_dr_0/out_orig_q]
   connect_bd_intf_net -intf_net pc_dr_0_out_q [get_bd_intf_pins passers_and_dma/in_q] [get_bd_intf_pins pc_dr_0/out_q]
-  connect_bd_intf_net -intf_net rfdc_m00_axis [get_bd_intf_pins input_passer_double_rate/in_q] [get_bd_intf_pins rfdc/m00_axis]
+  connect_bd_intf_net -intf_net rfdc_m00_axis [get_bd_intf_pins input_passer/in_data_q] [get_bd_intf_pins rfdc/m00_axis]
   connect_bd_intf_net -intf_net saturate_stream_dr_0_out_q [get_bd_intf_pins rfdc/s00_axis] [get_bd_intf_pins saturate_stream_dr_0/out_q]
   connect_bd_intf_net -intf_net sysref_in_1 [get_bd_intf_pins sysref_in] [get_bd_intf_pins rfdc/sysref_in]
   connect_bd_intf_net -intf_net vin0_01_1 [get_bd_intf_pins vin0_01] [get_bd_intf_pins rfdc/vin0_01]
 
   # Create port connections
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins m_axi_aresetn] [get_bd_pins passers_and_dma/m_axi_aresetn]
-  connect_bd_net -net receiver_aresetn_adc0 [get_bd_pins avgs_config_writer/ap_rst_n] [get_bd_pins axi_interconnect_hpm_1/M00_ARESETN] [get_bd_pins axi_interconnect_hpm_1/M01_ARESETN] [get_bd_pins axi_interconnect_hpm_1/M02_ARESETN] [get_bd_pins input_passer_config_writer/ap_rst_n] [get_bd_pins input_passer_double_rate/ap_rst_n] [get_bd_pins passers_and_dma/s_axis_aresetn] [get_bd_pins pc_dr_0/ap_rst_n] [get_bd_pins proc_sys_reset_adc0/peripheral_aresetn] [get_bd_pins rfdc/m0_axis_aresetn]
+  connect_bd_net -net receiver_aresetn_adc0 [get_bd_pins avgs_config_writer/ap_rst_n] [get_bd_pins axi_interconnect_hpm_1/M00_ARESETN] [get_bd_pins axi_interconnect_hpm_1/M01_ARESETN] [get_bd_pins axi_interconnect_hpm_1/M02_ARESETN] [get_bd_pins input_passer/ap_rst_n] [get_bd_pins passers_and_dma/s_axis_aresetn] [get_bd_pins pc_dr_0/ap_rst_n] [get_bd_pins proc_sys_reset_adc0/peripheral_aresetn] [get_bd_pins rfdc/m0_axis_aresetn]
   connect_bd_net -net rfdc_clk_dac0 [get_bd_pins axi_interconnect/M00_ACLK] [get_bd_pins proc_sys_reset_dac0/slowest_sync_clk] [get_bd_pins rfdc/clk_dac0] [get_bd_pins rfdc/s0_axis_aclk] [get_bd_pins saturate_stream_dr_0/ap_clk]
   connect_bd_net -net rst_ps8_0_99M_peripheral_aresetn [get_bd_pins s_axi_aresetn] [get_bd_pins axi_interconnect/ARESETN] [get_bd_pins axi_interconnect/S00_ARESETN] [get_bd_pins axi_interconnect_hpm_1/ARESETN] [get_bd_pins axi_interconnect_hpm_1/S00_ARESETN] [get_bd_pins axi_interconnect_ps/ARESETN] [get_bd_pins axi_interconnect_ps/M00_ARESETN] [get_bd_pins axi_interconnect_ps/M01_ARESETN] [get_bd_pins axi_interconnect_ps/M02_ARESETN] [get_bd_pins axi_interconnect_ps/M03_ARESETN] [get_bd_pins axi_interconnect_ps/S00_ARESETN] [get_bd_pins passers_and_dma/s_axi_aresetn] [get_bd_pins rfdc/s_axi_aresetn]
   connect_bd_net -net transmitter_aresetn_dac0 [get_bd_pins axi_interconnect/M00_ARESETN] [get_bd_pins proc_sys_reset_dac0/peripheral_aresetn] [get_bd_pins rfdc/s0_axis_aresetn] [get_bd_pins saturate_stream_dr_0/ap_rst_n]
-  connect_bd_net -net usp_rf_data_converter_0_clk_adc0 [get_bd_pins clk_adc0] [get_bd_pins avgs_config_writer/ap_clk] [get_bd_pins axi_interconnect_hpm_1/M00_ACLK] [get_bd_pins axi_interconnect_hpm_1/M01_ACLK] [get_bd_pins axi_interconnect_hpm_1/M02_ACLK] [get_bd_pins input_passer_config_writer/ap_clk] [get_bd_pins input_passer_double_rate/ap_clk] [get_bd_pins passers_and_dma/clk_adc0] [get_bd_pins pc_dr_0/ap_clk] [get_bd_pins proc_sys_reset_adc0/slowest_sync_clk] [get_bd_pins rfdc/clk_adc0] [get_bd_pins rfdc/m0_axis_aclk]
+  connect_bd_net -net usp_rf_data_converter_0_clk_adc0 [get_bd_pins clk_adc0] [get_bd_pins avgs_config_writer/ap_clk] [get_bd_pins axi_interconnect_hpm_1/M00_ACLK] [get_bd_pins axi_interconnect_hpm_1/M01_ACLK] [get_bd_pins axi_interconnect_hpm_1/M02_ACLK] [get_bd_pins input_passer/ap_clk] [get_bd_pins passers_and_dma/clk_adc0] [get_bd_pins pc_dr_0/ap_clk] [get_bd_pins proc_sys_reset_adc0/slowest_sync_clk] [get_bd_pins rfdc/clk_adc0] [get_bd_pins rfdc/m0_axis_aclk]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins s_axi_aclk] [get_bd_pins axi_interconnect/ACLK] [get_bd_pins axi_interconnect/S00_ACLK] [get_bd_pins axi_interconnect_hpm_1/ACLK] [get_bd_pins axi_interconnect_hpm_1/S00_ACLK] [get_bd_pins axi_interconnect_ps/ACLK] [get_bd_pins axi_interconnect_ps/M00_ACLK] [get_bd_pins axi_interconnect_ps/M01_ACLK] [get_bd_pins axi_interconnect_ps/M02_ACLK] [get_bd_pins axi_interconnect_ps/M03_ACLK] [get_bd_pins axi_interconnect_ps/S00_ACLK] [get_bd_pins passers_and_dma/s_axi_aclk] [get_bd_pins rfdc/s_axi_aclk]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins m_axi_aclk] [get_bd_pins passers_and_dma/m_axi_aclk]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ext_reset] [get_bd_pins proc_sys_reset_adc0/ext_reset_in] [get_bd_pins proc_sys_reset_dac0/ext_reset_in]
@@ -2351,11 +2331,11 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
   assign_bd_address -offset 0xB0030000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs radio/passers_and_dma/axi_dma_log/S_AXI_LITE/Reg] -force
   assign_bd_address -offset 0xB0040000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs radio/passers_and_dma/axi_dma_orig/S_AXI_LITE/Reg] -force
   assign_bd_address -offset 0xB0050000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs radio/passers_and_dma/axi_dma_orig_corrected/S_AXI_LITE/Reg] -force
-  assign_bd_address -offset 0xB0010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs radio/input_passer_config_writer/s_axi_a/Reg] -force
-  assign_bd_address -offset 0xB0060000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs radio/passers_and_dma/output_passer_config_writer_avg/s_axi_a/Reg] -force
-  assign_bd_address -offset 0xB0070000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs radio/passers_and_dma/output_passer_config_writer_log/s_axi_a/Reg] -force
-  assign_bd_address -offset 0xB0080000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs radio/passers_and_dma/output_passer_config_writer_orig/s_axi_a/Reg] -force
-  assign_bd_address -offset 0xB0090000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs radio/passers_and_dma/output_passer_config_writer_orig_corrected/s_axi_a/Reg] -force
+  assign_bd_address -offset 0xB0010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs radio/input_passer/s_axi_a/Reg] -force
+  assign_bd_address -offset 0xB0060000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs radio/passers_and_dma/output_passer_log/s_axi_a/Reg] -force
+  assign_bd_address -offset 0xB0070000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs radio/passers_and_dma/output_passer_orig/s_axi_a/Reg] -force
+  assign_bd_address -offset 0xB0080000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs radio/passers_and_dma/output_passer_orig_corrected/s_axi_a/Reg] -force
+  assign_bd_address -offset 0xB0090000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs radio/passers_and_dma/output_passer_avg/s_axi_a/Reg] -force
   assign_bd_address -offset 0xB00C0000 -range 0x00040000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs radio/rfdc/s_axi/Reg] -force
   assign_bd_address -offset 0x000800000000 -range 0x000800000000 -target_address_space [get_bd_addr_spaces radio/passers_and_dma/axi_dma_avg/Data_S2MM] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP4/HP2_DDR_HIGH] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces radio/passers_and_dma/axi_dma_avg/Data_S2MM] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP4/HP2_DDR_LOW] -force
