@@ -6,7 +6,7 @@ void hilbert_worker(
 		hls::stream<adc_data_two_val> &in_sig_q,
 		hls::stream<adc_data_compl, 100> &out_sig_h_q){
 	#pragma HLS INTERFACE mode=ap_ctrl_none port=return
-	#pragma HLS INTERFACE ap_fifo register port = in_sig_q depth=2
+	#pragma HLS INTERFACE axis register port = in_sig_q depth=2
 	#pragma HLS INTERFACE ap_fifo register port = out_sig_h_q depth=100
 	#pragma HLS PIPELINE II=1
 
@@ -119,7 +119,7 @@ void measure_worker(
 	#pragma HLS INTERFACE ap_fifo register port = in_ifg_q depth=100
 	#pragma HLS INTERFACE ap_fifo register port = in_ifg_time_q depth=100
 	#pragma HLS INTERFACE ap_fifo register port = out_correction_data_q depth=5
-	#pragma HLS INTERFACE ap_fifo register port = out_log_data_q depth=5
+	#pragma HLS INTERFACE axis register port = out_log_data_q depth=5
 	#pragma HLS pipeline off
 
 	const int min_f_idx = 0;
@@ -423,12 +423,12 @@ void process_worker(
 void avg_worker(
 		hls::stream<adc_data_compl, 100> &in_q,
 		hls::stream<adc_data_double_length_compl_2sampl_packet> &out_q,
-		hls::stream<ap_int<32>> &avgs_q
+		hls::stream<ap_int<32>, 10> &sig_num_avgs_q
 		){
 	#pragma HLS INTERFACE mode=ap_ctrl_none port=return
 	#pragma HLS INTERFACE ap_fifo register port=in_q depth=100
-	#pragma HLS INTERFACE ap_fifo register port=out_q depth=2
-	#pragma HLS INTERFACE axis register port=avgs_q depth=2
+	#pragma HLS INTERFACE axis register port=out_q depth=2
+	#pragma HLS INTERFACE ap_fifo register port=sig_num_avgs_q depth=2
 	#pragma HLS PIPELINE II=1 style=frp
 
 	static hls::stream<adc_data_double_length_compl_2sampl, retain_samples/2> buf_q;
@@ -455,8 +455,8 @@ void avg_worker(
 
 		// read if the number of averages has been updated
 		ap_int<32> avgs_temp;
-		if((avg_cnt==0) and (write_cnt==0))
-			if(avgs_q.read_nb(avgs_temp))
+		if((avg_cnt==0) and (write_cnt<5))
+			if(sig_num_avgs_q.read_nb(avgs_temp))
 				avgs = avgs_temp;
 
 	// every second clock
@@ -487,11 +487,24 @@ void avg_worker(
 	swap = !swap;
 }
 
+void in_avgs_worker(
+		hls::stream<ap_int<32>> &num_avgs_q,
+		hls::stream<ap_int<32>, 10> &sig_num_avgs_q
+		){
+
+	#pragma HLS INTERFACE mode=ap_ctrl_none port=return
+	#pragma HLS INTERFACE axis register port=num_avgs_q
+	#pragma HLS INTERFACE ap_fifo register port=sig_num_avgs_q
+	#pragma HLS PIPELINE II=1 style=frp
+
+	sig_num_avgs_q.write(num_avgs_q.read());
+}
+
 // main function
 void pc_dr(
 		hls::stream<adc_data_two_val> &in_q,
 		hls::stream<adc_data_double_length_compl_2sampl_packet> &out_q,
-		hls::stream<ap_int<32>> &avgs_q,
+		hls::stream<ap_int<32>> &num_avgs_q,
 		hls::stream<log_data_packet> &out_log_data_q,
 		hls::stream<adc_data_compl_4sampl_packet> &out_orig_q,
 		hls::stream<adc_data_compl_4sampl_packet> &out_orig_corrected_q
@@ -500,7 +513,7 @@ void pc_dr(
 
 	#pragma HLS INTERFACE axis register port = in_q depth=2
 	#pragma HLS INTERFACE axis register port = out_q depth=2
-	#pragma HLS INTERFACE axis register port = avgs_q depth=2
+	#pragma HLS INTERFACE axis register port = num_avgs_q depth=2
 	#pragma HLS INTERFACE axis register port = out_log_data_q depth=2
 	#pragma HLS INTERFACE axis register port = out_orig_q depth=2
 	#pragma HLS INTERFACE axis register port = out_orig_corrected_q depth=2
@@ -518,12 +531,12 @@ void pc_dr(
 	hls_thread_local hls::task t3(measure_worker, ifg1_q, ifg1_time_q, correction_data1_q, out_log_data_q);
 
 	hls_thread_local hls::stream<adc_data_compl, 100> avg_q;
-	//hls_thread_local hls::task t4(process_worker, proc1_buf_out_q, correction_data1_q, avg_q);
-	// for sending full data stream
-	//hls_thread_local hls::task t4(process_worker, proc1_buf_out_q, correction_data1_q, avg_q, out_orig_q);
 	hls_thread_local hls::task t4(process_worker, proc1_buf_out_q, correction_data1_q, avg_q, out_orig_q, out_orig_corrected_q);
 
-	hls_thread_local hls::task t5(avg_worker, avg_q, out_q, avgs_q);
+	hls_thread_local hls::stream<ap_int<32>, 10> sig_num_avgs_q;
+	hls_thread_local hls::task t5(in_avgs_worker, num_avgs_q, sig_num_avgs_q);
+
+	hls_thread_local hls::task t6(avg_worker, avg_q, out_q, sig_num_avgs_q);
 
 }
 

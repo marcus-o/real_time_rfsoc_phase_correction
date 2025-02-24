@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Mon Feb 24 00:00:20 2025" VIVADOVERSION="2022.1">
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Mon Feb 24 01:22:50 2025" VIVADOVERSION="2022.1">
 
   <SYSTEMINFO ARCH="zynquplusRFSOC" BOARD="realdigital.org:rfsoc4x2:part0:1.0" DEVICE="xczu48dr" NAME="base" PACKAGE="ffvg1517" SPEEDGRADE="-2"/>
 
@@ -1048,17 +1048,17 @@
         </PORT>
         <PORT DIR="O" NAME="config_out_q_TVALID" SIGIS="undef" SIGNAME="radio_avgs_config_writer_config_out_q_TVALID">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="radio_pc_dr_0" PORT="avgs_q_TVALID"/>
+            <CONNECTION INSTANCE="radio_pc_dr_0" PORT="num_avgs_q_TVALID"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" NAME="config_out_q_TREADY" SIGIS="undef" SIGNAME="radio_avgs_config_writer_config_out_q_TREADY">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="radio_pc_dr_0" PORT="avgs_q_TREADY"/>
+            <CONNECTION INSTANCE="radio_pc_dr_0" PORT="num_avgs_q_TREADY"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" LEFT="31" NAME="config_out_q_TDATA" RIGHT="0" SIGIS="undef" SIGNAME="radio_avgs_config_writer_config_out_q_TDATA">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="radio_pc_dr_0" PORT="avgs_q_TDATA"/>
+            <CONNECTION INSTANCE="radio_pc_dr_0" PORT="num_avgs_q_TDATA"/>
           </CONNECTIONS>
         </PORT>
       </PORTS>
@@ -15326,7 +15326,7 @@
         </BUSINTERFACE>
       </BUSINTERFACES>
     </MODULE>
-    <MODULE COREREVISION="2113968310" FULLNAME="/radio/pc_dr_0" HWVERSION="1.0" INSTANCE="radio_pc_dr_0" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="pc_dr" VLNV="xilinx.com:hls:pc_dr:1.0">
+    <MODULE COREREVISION="2113968440" FULLNAME="/radio/pc_dr_0" HWVERSION="1.0" INSTANCE="radio_pc_dr_0" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="pc_dr" VLNV="xilinx.com:hls:pc_dr:1.0">
       <DOCUMENTS/>
       <PARAMETERS>
         <PARAMETER NAME="Component_Name" VALUE="base_pc_dr_0_0"/>
@@ -15383,17 +15383,17 @@
             <CONNECTION INSTANCE="radio_passers_and_dma_output_passer_avg" PORT="in_data_q_TLAST"/>
           </CONNECTIONS>
         </PORT>
-        <PORT DIR="I" NAME="avgs_q_TVALID" SIGIS="undef" SIGNAME="radio_avgs_config_writer_config_out_q_TVALID">
+        <PORT DIR="I" NAME="num_avgs_q_TVALID" SIGIS="undef" SIGNAME="radio_avgs_config_writer_config_out_q_TVALID">
           <CONNECTIONS>
             <CONNECTION INSTANCE="radio_avgs_config_writer" PORT="config_out_q_TVALID"/>
           </CONNECTIONS>
         </PORT>
-        <PORT DIR="O" NAME="avgs_q_TREADY" SIGIS="undef" SIGNAME="radio_avgs_config_writer_config_out_q_TREADY">
+        <PORT DIR="O" NAME="num_avgs_q_TREADY" SIGIS="undef" SIGNAME="radio_avgs_config_writer_config_out_q_TREADY">
           <CONNECTIONS>
             <CONNECTION INSTANCE="radio_avgs_config_writer" PORT="config_out_q_TREADY"/>
           </CONNECTIONS>
         </PORT>
-        <PORT DIR="I" LEFT="31" NAME="avgs_q_TDATA" RIGHT="0" SIGIS="undef" SIGNAME="radio_avgs_config_writer_config_out_q_TDATA">
+        <PORT DIR="I" LEFT="31" NAME="num_avgs_q_TDATA" RIGHT="0" SIGIS="undef" SIGNAME="radio_avgs_config_writer_config_out_q_TDATA">
           <CONNECTIONS>
             <CONNECTION INSTANCE="radio_avgs_config_writer" PORT="config_out_q_TDATA"/>
           </CONNECTIONS>
@@ -15543,7 +15543,7 @@
             <PORTMAP LOGICAL="TLAST" PHYSICAL="out_q_TLAST"/>
           </PORTMAPS>
         </BUSINTERFACE>
-        <BUSINTERFACE BUSNAME="radio_avgs_config_writer_config_out_q" NAME="avgs_q" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
+        <BUSINTERFACE BUSNAME="radio_avgs_config_writer_config_out_q" NAME="num_avgs_q" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
           <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
@@ -15558,9 +15558,9 @@
           <PARAMETER NAME="CLK_DOMAIN" VALUE="base_rfdc_0_clk_adc0"/>
           <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
           <PORTMAPS>
-            <PORTMAP LOGICAL="TVALID" PHYSICAL="avgs_q_TVALID"/>
-            <PORTMAP LOGICAL="TREADY" PHYSICAL="avgs_q_TREADY"/>
-            <PORTMAP LOGICAL="TDATA" PHYSICAL="avgs_q_TDATA"/>
+            <PORTMAP LOGICAL="TVALID" PHYSICAL="num_avgs_q_TVALID"/>
+            <PORTMAP LOGICAL="TREADY" PHYSICAL="num_avgs_q_TREADY"/>
+            <PORTMAP LOGICAL="TDATA" PHYSICAL="num_avgs_q_TDATA"/>
           </PORTMAPS>
         </BUSINTERFACE>
         <BUSINTERFACE BUSNAME="radio_pc_dr_0_out_log_data_q" NAME="out_log_data_q" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">

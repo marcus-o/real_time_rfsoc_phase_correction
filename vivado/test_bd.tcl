@@ -224,7 +224,7 @@ proc create_root_design { parentCell } {
  ] $sim_clk_gen_0
 
   # Create interface connections
-  connect_bd_intf_net -intf_net const_config_writer_0_config_out_q [get_bd_intf_pins const_config_writer_0/config_out_q] [get_bd_intf_pins pc_dr_0/avgs_q]
+  connect_bd_intf_net -intf_net const_config_writer_0_config_out_q [get_bd_intf_pins const_config_writer_0/config_out_q] [get_bd_intf_pins pc_dr_0/num_avgs_q]
   connect_bd_intf_net -intf_net pc_dr_0_out_log_data_q [get_bd_intf_pins axi_dump_1/in_stream] [get_bd_intf_pins pc_dr_0/out_log_data_q]
   connect_bd_intf_net -intf_net pc_dr_0_out_orig_corrected_q [get_bd_intf_pins axi_dump_3/in_stream] [get_bd_intf_pins pc_dr_0/out_orig_corrected_q]
   connect_bd_intf_net -intf_net pc_dr_0_out_orig_q [get_bd_intf_pins axi_dump_2/in_stream] [get_bd_intf_pins pc_dr_0/out_orig_q]
@@ -241,7 +241,6 @@ proc create_root_design { parentCell } {
   # Restore current instance
   current_bd_instance $oldCurInst
 
-  validate_bd_design
   save_bd_design
 }
 # End of create_root_design()
@@ -253,4 +252,6 @@ proc create_root_design { parentCell } {
 
 create_root_design ""
 
+
+common::send_gid_msg -ssname BD::TCL -id 2053 -severity "WARNING" "This Tcl script was generated from a block design that has not been validated. It is possible that design <$design_name> may result in errors during validation."
 
