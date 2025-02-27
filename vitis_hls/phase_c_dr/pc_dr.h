@@ -35,7 +35,7 @@ const int trig_val = 2000;
 // const int t_unit_inv = 1;
 
 // length of samples to average, scale by the downsampling 0.95 and 0.95 to cut front and back
-const int retain_samples = int(int(sampling_rate_after_hilbert/offset_freq*0.95*0.95/2.)*2);
+const int retain_samples = int(int(sampling_rate_after_hilbert/offset_freq*0.95*0.95/4.)*4);
 // length when outputting unaveraged data
 const int orig_retain_samples = int(int(15350000./4.)*4);
 
@@ -64,6 +64,10 @@ typedef hls::axis<adc_data_double_length_compl, 0, 0, 0> adc_data_double_length_
 // fft only handles one fractional bit
 typedef ap_fixed<adc_width, 1> fp_short;
 typedef std::complex<fp_short> fp_compl_short;
+
+// sine and cosine only need 0-2pi input
+typedef ap_fixed<adc_width+3, 3> fp_short2;
+
 
 // adc width is really only 14 bit
 // hilbert should not be larger than adc width, so keep length and add fractional bits
@@ -99,6 +103,15 @@ typedef struct {
 }adc_data_double_length_compl_2sampl;
 typedef hls::axis<adc_data_double_length_compl_2sampl, 0, 0, 0> adc_data_double_length_compl_2sampl_packet;
 
+// struct to send averaged data with 256 bit width (4 samples)
+typedef struct {
+	adc_data_double_length_compl v1;
+	adc_data_double_length_compl v2;
+	adc_data_double_length_compl v3;
+	adc_data_double_length_compl v4;
+}adc_data_double_length_compl_4sampl;
+typedef hls::axis<adc_data_double_length_compl_4sampl, 0, 0, 0> adc_data_double_length_compl_4sampl_packet;
+
 // communication data structure from measure to process worker
 typedef struct {
 	time_int center_time_prev = 0;
@@ -109,6 +122,13 @@ typedef struct {
 	fp center_phase_prev_pi = 0;
 	fp center_freq0 = 0;
 } correction_data_type;
+
+// communication data structure from measure to process worker
+typedef struct {
+	adc_data_compl val;
+	time_int time_current;
+	correction_data_type correction_data;
+} process_data_type;
 
 // communication data structure for logging to dma
 typedef struct {
@@ -167,8 +187,8 @@ typedef hls::ip_fft::status_t<param1> status_t;
 void pc_dr(
 		hls::stream<adc_data_two_val> &in_q,
 		hls::stream<adc_data_double_length_compl_2sampl_packet> &out_q,
-		hls::stream<ap_int<32>> &avgs_q,
+		hls::stream<ap_int<32>> &num_avgs_q,
 		hls::stream<log_data_packet> &out_log_data_q,
 		hls::stream<adc_data_compl_4sampl_packet> &out_orig_q,
-		hls::stream<adc_data_compl_4sampl_packet> &out_orig_q_corrected
+		hls::stream<adc_data_compl_4sampl_packet> &out_orig_corrected_q
 		);

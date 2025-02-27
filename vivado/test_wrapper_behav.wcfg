@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="245,980.542 ns"></ZoomStartTime>
-      <ZoomEndTime time="246,220.957 ns"></ZoomEndTime>
-      <Cursor1Time time="246,019.599 ns"></Cursor1Time>
+      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
+      <ZoomEndTime time="701.000001 us"></ZoomEndTime>
+      <Cursor1Time time="633.397679 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="66"></ValueColumnWidth>
+      <NameColumnWidth column_width="252"></NameColumnWidth>
+      <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="16" />
+   <WVObjectSize size="15" />
    <wvobject fp_name="/test/test_bd_i/test_bd_i/sim_clk_gen_0/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -44,7 +44,6 @@
       <obj_property name="Detail_Data">/test/test_bd_i/test_bd_i/saturate_stream_dr_0/out_q.streamTooltipData</obj_property>
       <obj_property name="ElementShortName">out_q</obj_property>
       <obj_property name="ObjectShortName">out_q</obj_property>
-      <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject fp_name="/test/test_bd_i/test_bd_i/pc_dr_0/inst/hilbert_worker_U0/sig_h_q_din" type="array">
       <obj_property name="ElementShortName">sig_h_q_din[31:0]</obj_property>
@@ -82,25 +81,25 @@
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
       <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
    </wvobject>
-   <wvobject fp_name="/test/test_bd_i/test_bd_i/pc_dr_0/inst/trig_worker_U0/ifg1_q_din" type="array">
-      <obj_property name="ElementShortName">ifg1_q_din[63:0]</obj_property>
-      <obj_property name="ObjectShortName">ifg1_q_din[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/test/test_bd_i/test_bd_i/pc_dr_0/inst/trig_worker_U0/ifg1_q_num_data_valid" type="array">
-      <obj_property name="ElementShortName">ifg1_q_num_data_valid[7:0]</obj_property>
-      <obj_property name="ObjectShortName">ifg1_q_num_data_valid[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/test/test_bd_i/test_bd_i/pc_dr_0/inst/process_worker_U0/correction_data1_q_dout" type="array">
-      <obj_property name="ElementShortName">correction_data1_q_dout[303:0]</obj_property>
-      <obj_property name="ObjectShortName">correction_data1_q_dout[303:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/test/test_bd_i/test_bd_i/pc_dr_0/inst/process_worker_U0/correction_data1_q_num_data_valid" type="array">
+   <wvobject fp_name="/test/test_bd_i/test_bd_i/pc_dr_0/inst/process_worker_primer_U0/correction_data1_q_num_data_valid" type="array">
       <obj_property name="ElementShortName">correction_data1_q_num_data_valid[3:0]</obj_property>
       <obj_property name="ObjectShortName">correction_data1_q_num_data_valid[3:0]</obj_property>
    </wvobject>
+   <wvobject fp_name="/test/test_bd_i/test_bd_i/pc_dr_0/inst/proc1_out_q_U/if_dout" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">if_dout[383:0]</obj_property>
+      <obj_property name="ObjectShortName">if_dout[383:0]</obj_property>
+      <obj_property name="label">ifg_into_proc_worker_data</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test/test_bd_i/test_bd_i/pc_dr_0/inst/proc1_out_q_U/if_num_data_valid" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">if_num_data_valid[4:0]</obj_property>
+      <obj_property name="ObjectShortName">if_num_data_valid[4:0]</obj_property>
+      <obj_property name="label">ifg_data_valid</obj_property>
+   </wvobject>
    <wvobject fp_name="/test/test_bd_i/test_bd_i/pc_dr_0/inst/process_worker_U0/avg_q_din" type="array">
-      <obj_property name="ElementShortName">avg_q_din[31:0]</obj_property>
-      <obj_property name="ObjectShortName">avg_q_din[31:0]</obj_property>
+      <obj_property name="ElementShortName">avg_q_din[127:0]</obj_property>
+      <obj_property name="ObjectShortName">avg_q_din[127:0]</obj_property>
       <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       <obj_property name="AnalogYRangeType">ANALOG_YRANGETYPE_AUTO</obj_property>
@@ -146,7 +145,6 @@
       <obj_property name="Detail_Data">/test/test_bd_i/test_bd_i/pc_dr_0/out_orig_q.streamTooltipData</obj_property>
       <obj_property name="ElementShortName">out_orig_q</obj_property>
       <obj_property name="ObjectShortName">out_orig_q</obj_property>
-      <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject fp_name="/test/test_bd_i/test_bd_i/pc_dr_0/out_orig_corrected_q" type="protoinst">
       <obj_property name="children_use_element_short_name">true</obj_property>
@@ -163,6 +161,5 @@
       <obj_property name="Detail_Data">/test/test_bd_i/test_bd_i/pc_dr_0/out_orig_corrected_q.streamTooltipData</obj_property>
       <obj_property name="ElementShortName">out_orig_corrected_q</obj_property>
       <obj_property name="ObjectShortName">out_orig_corrected_q</obj_property>
-      <obj_property name="isExpanded"></obj_property>
    </wvobject>
 </wave_config>

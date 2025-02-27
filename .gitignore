@@ -16,5 +16,8 @@ vitis_hls/passer_double_rate/vitis_hls.log
 vitis_hls/phase_c_dr/vitis_hls.log
 vitis_hls/saturate_stream_dr/vitis_hls.log
 
+vitis_hls/phase_c_dr/test_scripts/input.txt
+vitis_hls/phase_c_dr/test_scripts/output.txt
+
 vivado/base
 vivado/test
