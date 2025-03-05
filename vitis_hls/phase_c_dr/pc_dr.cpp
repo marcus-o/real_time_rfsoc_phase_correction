@@ -70,8 +70,7 @@ void trig_worker(
 	const int trig_val_sq = trig_val*trig_val;
     const int buf_size1 = size_ifg_2 + size_spec_2;
 
-	static adc_data_compl inc_buf[buf_size1];
-	#pragma HLS bind_storage variable=inc_buf type=RAM_2P impl=bram
+	static hls::stream<adc_data_compl, buf_size1+10> inc_buf;
 	#pragma HLS reset variable=inc_buf off
 
 	static time_int time_current = 0;
@@ -80,41 +79,37 @@ void trig_worker(
 	#pragma HLS reset variable=remaining_packets
 	static int prev_write_val_abs_sq = 0;
 	#pragma HLS reset variable=prev_write_val_abs_sq
-	static int write_idx = 0;
-	#pragma HLS reset variable=write_idx
-	static int read_idx = 1;
-	#pragma HLS reset variable=read_idx
-
+	static int loop_cnt = 0;
+	#pragma HLS reset variable=loop_cnt
 
 	// all reads and writes
 	adc_data_compl cur_write_val = in_sig_h_q.read();
-	inc_buf[write_idx] = cur_write_val;
+	inc_buf.write(cur_write_val);
 	int cur_write_val_abs_sq = abs_sq(cur_write_val);
 
-	// pass on the data
-	adc_data_compl cur_read_val = inc_buf[read_idx];
-	out_proc_q.write(cur_read_val);
+	if(loop_cnt < buf_size1){
+		loop_cnt++;
+	} else {
+		// pass on the data
+		adc_data_compl cur_read_val = inc_buf.read();
+		out_proc_q.write(cur_read_val);
 
-	if(!remaining_packets){
-	  if (
-		  (time_current > buf_size1)
-		  && (cur_write_val_abs_sq > trig_val_sq)
-		  && (prev_write_val_abs_sq < trig_val_sq)){
-		remaining_packets = 2*buf_size1;
-	  }
-	}else{
-		out_ifg_q.write(fp_compl(fp(cur_read_val.real()), fp(cur_read_val.imag())));
-		out_ifg_time_q.write(time_current);
-		remaining_packets -= 1;
+		if(!remaining_packets){
+		  if (
+			  (time_current > buf_size1)
+			  && (cur_write_val_abs_sq > trig_val_sq)
+			  && (prev_write_val_abs_sq < trig_val_sq)){
+			remaining_packets = 2*buf_size1;
+		  }
+		}else{
+			out_ifg_q.write(fp_compl(fp(cur_read_val.real()), fp(cur_read_val.imag())));
+			out_ifg_time_q.write(time_current);
+			remaining_packets -= 1;
+		}
+		time_current = time_current + 1; // t_unit;
 	}
-
 	// save current value for next iteration
 	prev_write_val_abs_sq = cur_write_val_abs_sq;
-
-	// indexes for next iteration
-	write_idx = (write_idx==buf_size1-1) ? 0 : write_idx+1;
-	read_idx = (read_idx==buf_size1-1) ? 0 : read_idx+1;
-	time_current = time_current + 1; // t_unit;
 }
 
 void measure_worker(
@@ -300,7 +295,8 @@ void process_worker_primer(
 	#pragma HLS reset variable=cd
 
 	// starts after config data of second interferogram is received
-	// check each iteration if it needs new correction data (time_current has progressed past the maximum valid time of the current correction data)
+	// check each iteration if it needs new correction data
+    // (time_current has progressed past the maximum valid time of the current correction data)
 	if(time_current >= cd.center_time_observed)
 		if(!in_correction_data_q.read_nb(cd))
 			return;
@@ -373,7 +369,6 @@ void process_worker(
 	fp_long phase1_pi = cd.center_phase_prev_pi + cd.phase_slope_pi * fp_long(time_current - cd.center_time_prev); //* t_unit
 	fp phase_mod_pi = phase1_pi - hls::floor(phase1_pi/2)*2;
 	fp_compl correction = fp_compl(hls::cospi(-phase_mod_pi), hls::sinpi(-phase_mod_pi));
-
 	fp_compl inc_corr = fp_compl(fp(in_val.real()), fp(in_val.imag())) * correction;
 
 	// check if the down sampled signal has a data point between the last two samples
@@ -464,7 +459,7 @@ void avg_worker(
 	#pragma HLS INTERFACE ap_fifo register port=sig_num_avgs_q depth=2
 
 	static adc_data_double_length_compl_4sampl buf[retain_samples/4];
-	#pragma HLS bind_storage variable=buf type=RAM_2P impl=bram
+	#pragma HLS bind_storage variable=buf type=RAM_2P impl=uram
 	#pragma HLS reset variable=buf off
 
 	// average
