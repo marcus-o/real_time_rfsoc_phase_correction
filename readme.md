@@ -1,7 +1,10 @@
 
-# RFSoC Real-Time Dual-Comb Self-Phase-Correction Algorithm
-This repository contains a real-time self-phase-correction algorithm for the RFSoC4x2 (https://www.realdigital.org/hardware/rfsoc-4x2) board.
+# RFSoC Real-Time Dual-Comb Self-Correction Algorithm
+This repository contains a real-time self-correction algorithm for the RFSoC4x2 (https://www.realdigital.org/hardware/rfsoc-4x2) board.
 The code should be adaptable to other hardware implementing similar field-programmable gate arrays.
+
+## Code Description
+The code and its application are described our preprint on the arXiv (https://doi.org/10.48550/arXiv.2503.07005).
 
 ## Understanding the code
 Two python scripts in the python_model_code folder illustrate the function of the algorithm and the data flow in the FPGA implementation.
@@ -71,7 +74,13 @@ Validation and Experimentation by A. Eber, M. Schultze, B. Bernhardt, M. Ossiand
 
 ## License and Funding
 The code in this repository may be reused under a CC BY-NC 4.0 license ( https://creativecommons.org/licenses/by-nc/4.0/ ).
-The authors gratefully acknowledge support from NAWI Graz. B.B. acknowledges funding from the European Union (ERC HORIZON EUROPE 947288 ELFIS).
+
+We acknowledge the AMD University Program for software and hardware support.
+
+The authors gratefully acknowledge support from NAWI Graz.
+
+B.B. acknowledges funding from the European Union (ERC HORIZON EUROPE 947288 ELFIS).
+
 M.O. acknowledges funding from the European Union (grant agreement 101076933 EUVORAM).
 The views and opinions expressed are, however, those of the author(s) only and do not necessarily reflect those of the European Union or the European Research Council Executive Agency.
 Neither the European Union nor the granting authority can be held responsible for them.
