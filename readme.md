@@ -4,7 +4,7 @@ This repository contains a real-time self-correction algorithm for the RFSoC4x2 
 The code should be adaptable to other hardware implementing similar field-programmable gate arrays.
 
 ## Code Description
-The code and its application are described our preprint on the arXiv (https://doi.org/10.48550/arXiv.2503.07005).
+The code and its application are described in our preprint on the arXiv (https://doi.org/10.48550/arXiv.2503.07005).
 
 ## Understanding the code
 Two python scripts in the python_model_code folder illustrate the function of the algorithm and the data flow in the FPGA implementation.
@@ -70,7 +70,7 @@ source test.tcl
 
 
 ## Authors
-Validation and Experimentation by A. Eber, M. Schultze, B. Bernhardt, M. Ossiander. Code by M. Ossiander.
+Validation, Experimentation, Writing by A. Eber, M. Schultze, B. Bernhardt, M. Ossiander. Code by M. Ossiander.
 
 ## License and Funding
 The code in this repository may be reused under a CC BY-NC 4.0 license ( https://creativecommons.org/licenses/by-nc/4.0/ ).
