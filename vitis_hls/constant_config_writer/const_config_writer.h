@@ -7,5 +7,5 @@ typedef struct {
 } config1;
 
 void const_config_writer(
-		hls::stream<config1> &config_out_q
+	hls::stream<config1> &config_out_q
 	);

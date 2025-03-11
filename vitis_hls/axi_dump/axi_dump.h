@@ -10,5 +10,5 @@ typedef std::complex<fp_long> fp_compl_long;
 typedef hls::axis<fp_compl_long, 0, 0, 0> fp_compl_long_data_packet;
 
 void axi_dump(
-		hls::stream<fp_compl_long_data_packet> &in_stream
+	hls::stream<fp_compl_long_data_packet> &in_stream
 	);

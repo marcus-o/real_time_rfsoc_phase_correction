@@ -15,9 +15,9 @@ int main(){
 	hls::stream<ap_int<32>> avgs_q;
 	int pkg_cnt = 0;
 
-    printf("retain pkg: %d \n", retain_samples);
+	printf("retain pkg: %d \n", retain_samples);
 
-    // start processing
+	// start processing
 	pc_dr(in_q, out_q, avgs_q, log_q, out_orig_q, out_orig_corrected_q);
 
 	// set averaging
@@ -71,43 +71,43 @@ int main(){
 		std::ifstream inputFile("C:/Users/Labor/FPGA/vivado_2022_1/real_time_rfsoc_phase_correction/vitis_hls/phase_c_dr/test_scripts/input.txt", std::ios::binary);
 		bool swap=true;
 		adc_data_two_val val_out;
-	    for(int cnt=0; cnt<send_packets; cnt++){
-		   std::string t_string;
-		   std::string sig_string;
-		   std::getline(inputFile, t_string, ',');
-		   std::getline(inputFile, sig_string, '\n');
-		   adc_data in = adc_data(50000 * std::stof(sig_string.c_str()));
-		   if(swap){
-			  val_out.v1 = in;
-		   }else{
-			   val_out.v2 = in;
-			   in_q.write(val_out);
-		   }
-		   swap = !swap;
+		for(int cnt=0; cnt<send_packets; cnt++){
+			std::string t_string;
+			std::string sig_string;
+			std::getline(inputFile, t_string, ',');
+			std::getline(inputFile, sig_string, '\n');
+			adc_data in = adc_data(50000 * std::stof(sig_string.c_str()));
+			if(swap){
+				val_out.v1 = in;
+			}else{
+				val_out.v2 = in;
+				in_q.write(val_out);
+			}
+			swap = !swap;
 		}
 		inputFile.close();
-    }
+	}
 
 	// get the result and save to file
 	printf("start processing: \r");
 	std::ofstream outputFile("C:/Users/Labor/FPGA/vivado_2022_1/real_time_rfsoc_phase_correction/vitis_hls/phase_c_dr/test_scripts/output.txt");
-    while(pkg_cnt<retain_samples/2){
-    	adc_data_double_length_compl_2sampl_packet out_packet;
-        if (out_q.read_nb(out_packet)){
-        	pkg_cnt++;
-        	adc_data_double_length_compl_2sampl out = out_packet.data;  //.v1;
-        	outputFile << out.v1.real().to_int() << std::endl;
-        	outputFile << out.v1.imag().to_int() << std::endl;
-        	outputFile << out.v2.real().to_int() << std::endl;
-        	outputFile << out.v2.imag().to_int() << std::endl;
-            printf("pkg: %d, %d, %d \n", int(pkg_cnt), out.v1.real().to_int(), out_packet.last);
-        }
-    }
+	while(pkg_cnt<retain_samples/2){
+		adc_data_double_length_compl_2sampl_packet out_packet;
+		if (out_q.read_nb(out_packet)){
+			pkg_cnt++;
+			adc_data_double_length_compl_2sampl out = out_packet.data;  //.v1;
+			outputFile << out.v1.real().to_int() << std::endl;
+			outputFile << out.v1.imag().to_int() << std::endl;
+			outputFile << out.v2.real().to_int() << std::endl;
+			outputFile << out.v2.imag().to_int() << std::endl;
+			printf("pkg: %d, %d, %d \n", int(pkg_cnt), out.v1.real().to_int(), out_packet.last);
+		}
+	}
 	outputFile.close();
 
 	// how many packets were received?
-    printf("pkg_cnt:%d \n", int(pkg_cnt));
+	printf("pkg_cnt:%d \n", int(pkg_cnt));
 
-    // end gracefully
-    return 0;
+	// end gracefully
+	return 0;
 }

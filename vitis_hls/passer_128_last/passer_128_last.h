@@ -18,7 +18,7 @@ typedef struct {
 } config1;
 
 void passer_128_last(
-		hls::stream<data_packet> &in_q,
-		hls::stream<config1> &config_in_q,
-		hls::stream<data_packet> &out_q
-		);
+	hls::stream<data_packet> &in_q,
+	hls::stream<config1> &config_in_q,
+	hls::stream<data_packet> &out_q
+	);

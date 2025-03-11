@@ -145,50 +145,50 @@ const int ld_packets = 20000;
 const int hilbert_numtaps = 101;
 const int hilbert_mid = (hilbert_numtaps - 1) / 2;  // Half of the number of taps
 const fp fir_coeffs_hilbert[hilbert_numtaps] = {
-		0.        , -0.01299224,  0.        , -0.0135451 ,  0.        ,
-       -0.01414711,  0.        , -0.01480511,  0.        , -0.01552731,
-        0.        , -0.01632358,  0.        , -0.01720594,  0.        ,
-       -0.01818914,  0.        , -0.01929151,  0.        , -0.02053612,
-        0.        , -0.02195241,  0.        , -0.02357851,  0.        ,
-       -0.02546479,  0.        , -0.02767912,  0.        , -0.03031523,
-        0.        , -0.0335063 ,  0.        , -0.03744822,  0.        ,
-       -0.04244132,  0.        , -0.04897075,  0.        , -0.05787452,
-        0.        , -0.07073553,  0.        , -0.09094568,  0.        ,
-       -0.12732395,  0.        , -0.21220659,  0.        , -0.63661977,
-        0.        ,  0.63661977,  0.        ,  0.21220659,  0.        ,
-        0.12732395,  0.        ,  0.09094568,  0.        ,  0.07073553,
-        0.        ,  0.05787452,  0.        ,  0.04897075,  0.        ,
-        0.04244132,  0.        ,  0.03744822,  0.        ,  0.0335063 ,
-        0.        ,  0.03031523,  0.        ,  0.02767912,  0.        ,
-        0.02546479,  0.        ,  0.02357851,  0.        ,  0.02195241,
-        0.        ,  0.02053612,  0.        ,  0.01929151,  0.        ,
-        0.01818914,  0.        ,  0.01720594,  0.        ,  0.01632358,
-        0.        ,  0.01552731,  0.        ,  0.01480511,  0.        ,
-        0.01414711,  0.        ,  0.0135451 ,  0.        ,  0.01299224,
-        0.        };
+	0.        , -0.01299224,  0.        , -0.0135451 ,  0.        ,
+	-0.01414711,  0.        , -0.01480511,  0.        , -0.01552731,
+	0.        , -0.01632358,  0.        , -0.01720594,  0.        ,
+	-0.01818914,  0.        , -0.01929151,  0.        , -0.02053612,
+	0.        , -0.02195241,  0.        , -0.02357851,  0.        ,
+	-0.02546479,  0.        , -0.02767912,  0.        , -0.03031523,
+	0.        , -0.0335063 ,  0.        , -0.03744822,  0.        ,
+	-0.04244132,  0.        , -0.04897075,  0.        , -0.05787452,
+	0.        , -0.07073553,  0.        , -0.09094568,  0.        ,
+	-0.12732395,  0.        , -0.21220659,  0.        , -0.63661977,
+	0.        ,  0.63661977,  0.        ,  0.21220659,  0.        ,
+	0.12732395,  0.        ,  0.09094568,  0.        ,  0.07073553,
+	0.        ,  0.05787452,  0.        ,  0.04897075,  0.        ,
+	0.04244132,  0.        ,  0.03744822,  0.        ,  0.0335063 ,
+	0.        ,  0.03031523,  0.        ,  0.02767912,  0.        ,
+	0.02546479,  0.        ,  0.02357851,  0.        ,  0.02195241,
+	0.        ,  0.02053612,  0.        ,  0.01929151,  0.        ,
+	0.01818914,  0.        ,  0.01720594,  0.        ,  0.01632358,
+	0.        ,  0.01552731,  0.        ,  0.01480511,  0.        ,
+	0.01414711,  0.        ,  0.0135451 ,  0.        ,  0.01299224,
+	0.        };
 
 // fft parameters and config data types
 struct param1: hls::ip_fft::params_t {
-    static const unsigned ordering_opt = hls::ip_fft::natural_order;
-    static const bool has_nfft = false;
-    static const unsigned max_nfft = 9;
-    static const unsigned input_width = adc_width;
+	static const unsigned ordering_opt = hls::ip_fft::natural_order;
+	static const bool has_nfft = false;
+	static const unsigned max_nfft = 9;
+	static const unsigned input_width = adc_width;
 	static const unsigned output_width = adc_width;
-    // static const unsigned scaling_opt = hls::ip_fft::scaled;
+	// static const unsigned scaling_opt = hls::ip_fft::scaled;
 	// static const unsigned config_width = 16;
-    static const unsigned scaling_opt = hls::ip_fft::block_floating_point;
-    static const unsigned config_width = 8;
-    static const unsigned rounding_opt = hls::ip_fft::truncation;
+	static const unsigned scaling_opt = hls::ip_fft::block_floating_point;
+	static const unsigned config_width = 8;
+	static const unsigned rounding_opt = hls::ip_fft::truncation;
 };
 typedef hls::ip_fft::config_t<param1> config_t;
 typedef hls::ip_fft::status_t<param1> status_t;
 
 //main function definition
 void pc_dr(
-		hls::stream<adc_data_two_val> &in_q,
-		hls::stream<adc_data_double_length_compl_2sampl_packet> &out_q,
-		hls::stream<ap_int<32>> &num_avgs_q,
-		hls::stream<log_data_packet> &out_log_data_q,
-		hls::stream<adc_data_compl_4sampl_packet> &out_orig_q,
-		hls::stream<adc_data_compl_4sampl_packet> &out_orig_corrected_q
-		);
+	hls::stream<adc_data_two_val> &in_q,
+	hls::stream<adc_data_double_length_compl_2sampl_packet> &out_q,
+	hls::stream<ap_int<32>> &num_avgs_q,
+	hls::stream<log_data_packet> &out_log_data_q,
+	hls::stream<adc_data_compl_4sampl_packet> &out_orig_q,
+	hls::stream<adc_data_compl_4sampl_packet> &out_orig_corrected_q
+	);

@@ -10,24 +10,24 @@ int main(){
 	config1 config_temp;
 
 	ap_int<32> send = 0;
-    for(int cnt=0; cnt<20; cnt++){
-    	passer_config_writer(send, config_out);
+	for(int cnt=0; cnt<20; cnt++){
+		passer_config_writer(send, config_out);
 		if(config_out.read_nb(config_temp))
 			printf("config send:%d \r", int(config_temp.send));
-    }
+	}
 
 	send = 1;
-    for(int cnt=0; cnt<20; cnt++){
-    	passer_config_writer(send, config_out);
+	for(int cnt=0; cnt<20; cnt++){
+		passer_config_writer(send, config_out);
 		if(config_out.read_nb(config_temp))
 			printf("config send:%d \r", int(config_temp.send));
-    }
+	}
 
 	send = 0;
-    for(int cnt=0; cnt<20; cnt++){
-    	passer_config_writer(send, config_out);
+	for(int cnt=0; cnt<20; cnt++){
+		passer_config_writer(send, config_out);
 		if(config_out.read_nb(config_temp))
 			printf("config send:%d \r", int(config_temp.send));
-    }
-    return 0;
+	}
+	return 0;
 }

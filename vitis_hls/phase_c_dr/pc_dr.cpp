@@ -10,33 +10,33 @@ void hilbert_worker(
 	#pragma HLS INTERFACE ap_fifo register port = out_sig_h_q depth=100
 	#pragma HLS PIPELINE II=1
 
-    const int buf_size0 = 51;
-    const int hilbert_mid_adj = 25;
+	const int buf_size0 = 51;
+	const int hilbert_mid_adj = 25;
 
-    static adc_data_two_val inc_buf[buf_size0];
+	static adc_data_two_val inc_buf[buf_size0];
 	#pragma HLS array_partition variable=inc_buf type=complete
 	#pragma HLS reset variable=inc_buf off
 
-    // used to multiply with fmax/2: cnt0*2, cnt1*0, cnt2*-2, cnt3*0
-    static single_digit swap = 2;
+	// used to multiply with fmax/2: cnt0*2, cnt1*0, cnt2*-2, cnt3*0
+	static single_digit swap = 2;
 	#pragma HLS reset variable=swap
 
-    // shift by one
-    for(int cnt=0; cnt<buf_size0-1; cnt++){
+	// shift by one
+	for(int cnt=0; cnt<buf_size0-1; cnt++){
 		#pragma hls unroll
-    	inc_buf[cnt] = inc_buf[cnt+1];
-    }
-    // fill last position
+		inc_buf[cnt] = inc_buf[cnt+1];
+	}
+	// fill last position
 	inc_buf[buf_size0-1] = in_sig_q.read();;
 
 	adc_data mid_val = inc_buf[hilbert_mid_adj].v1;
 	fp sum_temp = 0;
-    for(int cnt=0; cnt<buf_size0; cnt++){
+	for(int cnt=0; cnt<buf_size0; cnt++){
 		#pragma hls unroll
-    	sum_temp -= fp(inc_buf[cnt].v2) * fir_coeffs_hilbert[cnt*2+1];
-    }
+		sum_temp -= fp(inc_buf[cnt].v2) * fir_coeffs_hilbert[cnt*2+1];
+	}
 	out_sig_h_q.write(adc_data_compl(mid_val*swap, adc_data(sum_temp)*swap));
-    swap = -1*swap;
+	swap = -1*swap;
 }
 
 fp abs_sq(fp_compl_short a){
@@ -68,7 +68,7 @@ void trig_worker(
 	#pragma HLS PIPELINE II=1
 
 	const int trig_val_sq = trig_val*trig_val;
-    const int buf_size1 = size_ifg_2 + size_spec_2;
+	const int buf_size1 = size_ifg_2 + size_spec_2;
 
 	static hls::stream<adc_data_compl, buf_size1+10> inc_buf;
 	#pragma HLS reset variable=inc_buf off
@@ -95,12 +95,12 @@ void trig_worker(
 		out_proc_q.write(cur_read_val);
 
 		if(!remaining_packets){
-		  if (
-			  (time_current > buf_size1)
-			  && (cur_write_val_abs_sq > trig_val_sq)
-			  && (prev_write_val_abs_sq < trig_val_sq)){
-			remaining_packets = 2*buf_size1;
-		  }
+			if (
+					(time_current > buf_size1)
+					&& (cur_write_val_abs_sq > trig_val_sq)
+					&& (prev_write_val_abs_sq < trig_val_sq)){
+				remaining_packets = 2*buf_size1;
+			}
 		}else{
 			out_ifg_q.write(fp_compl(fp(cur_read_val.real()), fp(cur_read_val.imag())));
 			out_ifg_time_q.write(time_current);
@@ -137,7 +137,7 @@ void measure_worker(
 	static float center_freq0 = 0;
 	#pragma HLS reset variable=center_freq0
 
-    static int cnt_proc_loops = 0;
+	static int cnt_proc_loops = 0;
 	#pragma HLS reset variable=cnt_proc_loops
 	static int ld_write_cnt = 0;
 	#pragma HLS reset variable=ld_write_cnt
@@ -213,41 +213,41 @@ void measure_worker(
 	}
 	float center_freq_observed = 0;
 	if(proc2_sum2 > fp_long(0))
-	    center_freq_observed = proc2_sum1.to_float() / proc2_sum2.to_float() / float(size_spec_2*2); // / fp_small_long(t_unit);
+		center_freq_observed = proc2_sum1.to_float() / proc2_sum2.to_float() / float(size_spec_2*2); // / fp_small_long(t_unit);
 
-    // first interferogram defines the frequency for all of them
-    if (cnt_proc_loops == 0)
-        center_freq0 = center_freq_observed;
+	// first interferogram defines the frequency for all of them
+	if (cnt_proc_loops == 0)
+		center_freq0 = center_freq_observed;
 
-    // first and second interferogram define the sampling rate
-    //float delta_time = (center_time_observed - center_time_prev).to_float();
-    float delta_time = (center_time_observed_exact - center_time_prev).to_float();
+	// first and second interferogram define the sampling rate
+	//float delta_time = (center_time_observed - center_time_prev).to_float();
+	float delta_time = (center_time_observed_exact - center_time_prev).to_float();
 
-    if(cnt_proc_loops == 1)
-        offset_time0 = delta_time;
+	if(cnt_proc_loops == 1)
+		offset_time0 = delta_time;
 
-    // slope of the phase needed to shift frequency to zero
-    float phase_slope_pi = center_freq0 * 2.; //* fp_small_long(t_unit)
+	// slope of the phase needed to shift frequency to zero
+	float phase_slope_pi = center_freq0 * 2.; //* fp_small_long(t_unit)
 
-    // calculate the leftover phase at the next ifg and correct
-    // first, predict phase correction for the entire ifg-ifg distance
+	// calculate the leftover phase at the next ifg and correct
+	// first, predict phase correction for the entire ifg-ifg distance
 	float phase_applied_ps_pi = phase_slope_pi * delta_time;
-    // how much additional phase do we need?
+	// how much additional phase do we need?
 	float add_phase_full_pi = center_phase_observed_pi - center_phase_prev_pi - phase_applied_ps_pi;
-    // calculate the smallest additional phase (assume well behaved lasers)
+	// calculate the smallest additional phase (assume well behaved lasers)
 	float add_phase_mod_pi = add_phase_full_pi - hls::round(add_phase_full_pi/2)*2;
-    // calculate the full phase correction per time unit (phase slope)
-    float full_phase_slope_pi = (phase_applied_ps_pi + add_phase_mod_pi) / delta_time;
+	// calculate the full phase correction per time unit (phase slope)
+	float full_phase_slope_pi = (phase_applied_ps_pi + add_phase_mod_pi) / delta_time;
 
-    // calculate the sampling time interval to correct for repetition rate changes
-    // start with slight downsampling to be able to correct in both directions
-    float sampling_time_unit = inv95;
-    if(offset_time0 > 0)
-    	sampling_time_unit = delta_time / offset_time0 * inv95; // * t_unit
+	// calculate the sampling time interval to correct for repetition rate changes
+	// start with slight downsampling to be able to correct in both directions
+	float sampling_time_unit = inv95;
+	if(offset_time0 > 0)
+		sampling_time_unit = delta_time / offset_time0 * inv95; // * t_unit
 
 	// put all correction data in structure and send
 	// first one is ignored by process worker because cd.center_time_prev == 0
-    correction_data_type cd;
+	correction_data_type cd;
 	cd.center_phase_prev_pi = fp(center_phase_prev_pi);
 	cd.phase_slope_pi = fp_small(full_phase_slope_pi);
 	cd.center_time_prev = center_time_prev;
@@ -272,10 +272,10 @@ void measure_worker(
 		ld_write_cnt = (ld_write_cnt < (ld_packets-1)) ? ld_write_cnt+1 : 0;
 	}
 	// retain data for next iteration
-    //center_time_prev = center_time_observed;
-    center_time_prev = center_time_observed_exact;
-    center_phase_prev_pi = center_phase_observed_pi;
-    cnt_proc_loops = cnt_proc_loops + 1;
+	//center_time_prev = center_time_observed;
+	center_time_prev = center_time_observed_exact;
+	center_phase_prev_pi = center_phase_observed_pi;
+	cnt_proc_loops = cnt_proc_loops + 1;
 }
 
 void process_worker_primer(
@@ -291,12 +291,12 @@ void process_worker_primer(
 
 	static time_int time_current = 0;
 	#pragma HLS reset variable=time_current
-    static correction_data_type cd;
+	static correction_data_type cd;
 	#pragma HLS reset variable=cd
 
 	// starts after config data of second interferogram is received
 	// check each iteration if it needs new correction data
-    // (time_current has progressed past the maximum valid time of the current correction data)
+	// (time_current has progressed past the maximum valid time of the current correction data)
 	if(time_current >= cd.center_time_observed)
 		if(!in_correction_data_q.read_nb(cd))
 			return;
@@ -329,31 +329,31 @@ void process_worker(
 	static fp_compl prev_inc_corr = fp_compl(0, 0);
 	#pragma HLS reset variable=prev_inc_corr
 
-    static int send_packets = retain_samples;
+	static int send_packets = retain_samples;
 	#pragma HLS reset variable=retain_samples
-    static int orig_sent_samples = orig_retain_samples;
+	static int orig_sent_samples = orig_retain_samples;
 	#pragma HLS reset variable=orig_sent_samples
-    static int orig_corrected_sent_samples = orig_retain_samples;
+	static int orig_corrected_sent_samples = orig_retain_samples;
 	#pragma HLS reset variable=orig_corrected_sent_samples
 
-    static adc_data_compl_4sampl out;
+	static adc_data_compl_4sampl out;
 	#pragma HLS reset variable=out off
-    static adc_data_compl_4sampl out_orig;
+	static adc_data_compl_4sampl out_orig;
 	#pragma HLS reset variable=out_orig off
-    static adc_data_compl_4sampl out_orig_corrected;
+	static adc_data_compl_4sampl out_orig_corrected;
 	#pragma HLS reset variable=out_orig_corrected off
 
-    static int stage = 0;
+	static int stage = 0;
 	#pragma HLS reset variable=stage
-    static int orig_stage = 0;
+	static int orig_stage = 0;
 	#pragma HLS reset variable=orig_stage
-    static int orig_corrected_stage = 0;
+	static int orig_corrected_stage = 0;
 	#pragma HLS reset variable=orig_corrected_stage
 
-    static bool first = true;
+	static bool first = true;
 	#pragma HLS reset variable=first
 
-    process_data_type in = in_q.read();
+	process_data_type in = in_q.read();
 
 	adc_data_compl in_val = in.val;
 	time_int time_current = in.time_current;
@@ -522,7 +522,6 @@ void in_avgs_worker(
 		hls::stream<ap_int<32>> &num_avgs_q,
 		hls::stream<ap_int<32>, 10> &sig_num_avgs_q
 		){
-
 	#pragma HLS INTERFACE mode=ap_ctrl_none port=return
 	#pragma HLS INTERFACE axis register port=num_avgs_q
 	#pragma HLS INTERFACE ap_fifo register port=sig_num_avgs_q
@@ -541,7 +540,6 @@ void pc_dr(
 		hls::stream<adc_data_compl_4sampl_packet> &out_orig_corrected_q
 		){
 	#pragma HLS INTERFACE mode=ap_ctrl_none port=return
-
 	#pragma HLS INTERFACE axis register port = in_q depth=2
 	#pragma HLS INTERFACE axis register port = out_q depth=2
 	#pragma HLS INTERFACE axis register port = num_avgs_q depth=2

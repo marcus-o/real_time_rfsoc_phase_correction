@@ -9,9 +9,7 @@ void passer_config_writer(
 		ap_int<32> send,
 		hls::stream<config1> &config_out_q
 	){
-
 	#pragma HLS INTERFACE mode=ap_ctrl_none port=return
-
 	#pragma HLS INTERFACE s_axilite port=send bundle=a
 	#pragma HLS INTERFACE axis register port=config_out_q depth=1
 

@@ -17,5 +17,5 @@ typedef ap_fixed<adc_width*3, adc_width*2> fp_long;
 typedef ap_fixed<adc_width*4, adc_width*2> fp_small_long;
 
 void saturate_stream_dr(
-		hls::stream<adc_data_two_val> &out_q
-		);
+	hls::stream<adc_data_two_val> &out_q
+	);

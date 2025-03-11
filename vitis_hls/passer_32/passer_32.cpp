@@ -4,7 +4,6 @@ void in_data_worker(
 		hls::stream<data> &in_data_q,
 		hls::stream<data, 10> &sig_data_q
 		){
-
 	#pragma HLS INTERFACE mode=ap_ctrl_none port=return
 	#pragma HLS INTERFACE axis register port=in_data_q
 	#pragma HLS INTERFACE ap_fifo register port=sig_data_q
@@ -17,7 +16,6 @@ void in_config_worker(
 		ap_int<32> *send,
 		hls::stream<config1, 10> &sig_config_q
 		){
-
 	#pragma HLS INTERFACE mode=ap_ctrl_none port=return
 	#pragma HLS INTERFACE s_axilite register port=send bundle=a
 	#pragma HLS INTERFACE ap_fifo register port=sig_config_q
@@ -37,7 +35,6 @@ void out_worker(
 		hls::stream<config1> &sig_config_q,
 		hls::stream<data> &out_q
 		){
-
 	#pragma HLS INTERFACE mode=ap_ctrl_none port=return
 	#pragma HLS INTERFACE ap_fifo register port=sig_data_q
 	#pragma HLS INTERFACE ap_fifo register port=sig_config_q
@@ -63,7 +60,6 @@ void passer_32(
 		hls::stream<data> &out_q,
 		ap_int<32> *send
 		){
-
 	#pragma HLS INTERFACE mode=ap_ctrl_none port=return
 	#pragma HLS INTERFACE axis register port=in_data_q
 	#pragma HLS INTERFACE axis register port=out_q
