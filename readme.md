@@ -2,8 +2,9 @@
 # RFSoC Real-Time Dual-Comb Self-Correction Algorithm
 This repository contains a real-time self-correction algorithm for the RFSoC4x2 (https://www.realdigital.org/hardware/rfsoc-4x2) board.
 The code should be adaptable to other hardware implementing similar field-programmable gate arrays.
+Two codes are provided, one works for a fixed detuning of 20 kHz (easier to understand) and one for arbitrary detunings (more flexible).
 
-## Code Description
+## Code description
 The code and its application are described in our preprint on the arXiv (https://doi.org/10.48550/arXiv.2503.07005).
 
 ## Understanding the code
@@ -18,11 +19,13 @@ Connect to the Jupyter environment on the RFSoC4x2 in your browser and upload th
 - the full interferogram train without phase correction (no_phase_correction_full_data.ipynb)
 
 ### Real-time phase correction and averaging for adjustable detunings
-Connect to the Jupyter environment on the RFSoC4x2 in your browser and upload the contents of the adjustable_pc/pynq folder. The provided notebook (adjustable_phase_correction) can output
+Connect to the Jupyter environment on the RFSoC4x2 in your browser and upload the contents of the adjustable_pc/pynq folder.
+Install the *.dtbo file to the RFSoC4x2 following the instructions in adjustable_pc/pynq/overlay/insert_dtbo.py.
+The provided notebook (adjustable_phase_correction.ipynb) can output
 - the full interferogram train with phase correction
 - coherently averaged interferograms after phase correction
-- the full interferogram train without phase correction
 - the interferogram parameters measured by the phase correction
+- the full interferogram train without phase correction
 
 ## Connecting the RFSoC4x2
 The AMD Zynq Ultrascale+ RFSoC XCZU48DR-2FFVG1517E accepts maximally a 1 V peak-to-peak voltage at its analog-to-digital converters which are 100-Ohm terminated. 
@@ -42,7 +45,7 @@ The provided overlays listen for interferograms at port ADC_D. For testing, the 
 ```
 folder (create the folder if it doesn't exist).
 
-### create the fixed detuning phase correction overlay (easier to understand)
+### For creating the fixed detuning phase correction overlay (easier to understand)
 3. build the Vitis HLS ip: for each subfolder in the fixed_pc/vitis_hls folder:
 - in a console, change the working directory to the subfolder
 - to make a vitis_hls console, run (for unix there will be a similar shell script):
@@ -77,9 +80,7 @@ source test.tcl
 - click simulate, run simulation
 
 
-### create the adjustable detuning phase correction overlay (easier to understand)
-1. follow steps 1 and 2 above
-
+### For creating the adjustable detuning phase correction overlay
 3. build the Vitis HLS ip: for each subfolder in the adjustable_pc/vitis_hls folder:
 - in a console, change the working directory to the subfolder
 - to make a vitis_hls console, run (for unix there will be a similar shell script):
@@ -101,7 +102,6 @@ cd location/real_time_rfsoc_phase_correction/adjustable_pc/vivado/
 source adj.tcl
 ```
 - click generate the bitstream
-
 
 ## Authors
 Validation, Experimentation, Writing by A. Eber, M. Schultze, B. Bernhardt, M. Ossiander. Code by M. Ossiander.
