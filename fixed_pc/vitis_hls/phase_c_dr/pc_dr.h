@@ -116,10 +116,12 @@ typedef hls::axis<adc_data_double_length_compl_4sampl, 0, 0, 0> adc_data_double_
 typedef struct {
 	time_int center_time_prev = 0;
 	time_int center_time_observed = 0;
+	fp_time center_time_prev_exact = 0;
+	fp_time center_time_observed_exact = 0;
 	fp_time start_sending_time = 0;
-	fp_small phase_slope_pi = 0;
+	float phase_slope_pi = 0;
 	fp sampling_time_unit = 0;
-	fp center_phase_prev_pi = 0;
+	float center_phase_prev_pi = 0;
 	fp center_freq0 = 0;
 } correction_data_type;
 

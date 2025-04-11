@@ -4,12 +4,7 @@ fixed_pc/vitis_hls/passer_config_writer/proj
 fixed_pc/vitis_hls/passer_128_last/proj
 fixed_pc/vitis_hls/passer_32/proj
 fixed_pc/vitis_hls/passer_double_rate/proj
-fixed_pc/vitis_hls/phase_c_dr/dma_passer
-fixed_pc/vitis_hls/phase_c_dr/dma_writer
-fixed_pc/vitis_hls/phase_c_dr/hilbert_transform
-fixed_pc/vitis_hls/phase_c_dr/measure_worker
-fixed_pc/vitis_hls/phase_c_dr/pc_averager
-fixed_pc/vitis_hls/phase_c_dr/pc_dr
+fixed_pc/vitis_hls/phase_c_dr/proj
 fixed_pc/vitis_hls/saturate_stream_dr/proj
 fixed_pc/vitis_hls/old
 

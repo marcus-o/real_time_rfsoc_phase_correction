@@ -68,7 +68,7 @@ int main(){
 		}
 	// use pre-recorded interferogram stream
 	}else{
-		std::ifstream inputFile("C:/Users/Labor/FPGA/vivado_2022_1/real_time_rfsoc_phase_correction/vitis_hls/phase_c_dr/test_scripts/input.txt", std::ios::binary);
+		std::ifstream inputFile("C:/FPGA/real_time_rfsoc_phase_correction/fixed_pc/vitis_hls/phase_c_dr/test_scripts/input.txt", std::ios::binary);
 		bool swap=true;
 		adc_data_two_val val_out;
 		for(int cnt=0; cnt<send_packets; cnt++){
@@ -90,7 +90,7 @@ int main(){
 
 	// get the result and save to file
 	printf("start processing: \r");
-	std::ofstream outputFile("C:/Users/Labor/FPGA/vivado_2022_1/real_time_rfsoc_phase_correction/vitis_hls/phase_c_dr/test_scripts/output.txt");
+	std::ofstream outputFile("C:/FPGA/real_time_rfsoc_phase_correction/fixed_pc/vitis_hls/phase_c_dr/test_scripts/output.txt");
 	while(pkg_cnt<retain_samples/2){
 		adc_data_double_length_compl_2sampl_packet out_packet;
 		if (out_q.read_nb(out_packet)){

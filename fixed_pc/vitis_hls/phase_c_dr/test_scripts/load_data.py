@@ -3,12 +3,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-dat = np.loadtxt('C:/Users/Labor/FPGA/vivado_2022_1/real_time_rfsoc_phase_correction/vitis_hls/phase_c_dr/test_scripts/output.txt')
+dat = np.loadtxt('C:/FPGA/real_time_rfsoc_phase_correction/fixed_pc/vitis_hls/phase_c_dr/test_scripts/output.txt')
 dat = dat[0::2] + 1j*dat[1::2]
 
-plt.plot(np.real(dat))
-plt.plot(np.imag(dat))
-plt.xlim([6000, 8000])
+plt.plot(np.real(dat), '.-')
+plt.plot(np.imag(dat), '.-')
+plt.xlim([6850, 7000])
 plt.show()
 
 plt.plot(np.real(dat))

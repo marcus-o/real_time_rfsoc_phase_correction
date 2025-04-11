@@ -130,6 +130,9 @@ void measure_worker(
 
 	static time_int center_time_prev = 0;
 	#pragma HLS reset variable=center_time_prev
+	static fp_time center_time_prev_exact = 0;
+	#pragma HLS reset variable=center_time_prev_exact
+
 	static float offset_time0 = 0;
 	#pragma HLS reset variable=offset_time0
 	static float center_phase_prev_pi = 0;
@@ -221,7 +224,8 @@ void measure_worker(
 
 	// first and second interferogram define the sampling rate
 	//float delta_time = (center_time_observed - center_time_prev).to_float();
-	float delta_time = (center_time_observed_exact - center_time_prev).to_float();
+	float delta_time = (center_time_observed - center_time_prev).to_float();
+	float delta_time_exact = (center_time_observed_exact - center_time_prev_exact).to_float();
 
 	if(cnt_proc_loops == 1)
 		offset_time0 = delta_time;
@@ -248,12 +252,12 @@ void measure_worker(
 	// put all correction data in structure and send
 	// first one is ignored by process worker because cd.center_time_prev == 0
 	correction_data_type cd;
-	cd.center_phase_prev_pi = fp(center_phase_prev_pi);
-	cd.phase_slope_pi = fp_small(full_phase_slope_pi);
+	cd.center_phase_prev_pi = center_phase_prev_pi;
+	cd.phase_slope_pi = full_phase_slope_pi;
 	cd.center_time_prev = center_time_prev;
-	//cd.center_time_observed = center_time_observed;
-	cd.center_time_observed = center_time_observed_exact;
-
+	cd.center_time_prev_exact = center_time_prev;
+	cd.center_time_observed = center_time_observed;
+	cd.center_time_observed_exact = center_time_observed_exact;
 	cd.sampling_time_unit = fp(sampling_time_unit);
 	cd.start_sending_time = fp_time(center_time_observed_exact - fp_long(retain_samples/2)*fp_long(sampling_time_unit));
 
@@ -262,7 +266,7 @@ void measure_worker(
 		out_correction_data_q.write(cd);
 
 		log_data_packet ld;
-		ld.data.delta_time = delta_time;
+		ld.data.delta_time = delta_time_exact;
 		ld.data.phase = center_phase_observed_pi;
 		ld.data.center_freq = center_freq_observed;
 		ld.keep = -1;
@@ -273,7 +277,8 @@ void measure_worker(
 	}
 	// retain data for next iteration
 	//center_time_prev = center_time_observed;
-	center_time_prev = center_time_observed_exact;
+	center_time_prev = center_time_observed;
+	center_time_prev_exact = center_time_observed_exact;
 	center_phase_prev_pi = center_phase_observed_pi;
 	cnt_proc_loops = cnt_proc_loops + 1;
 }
@@ -366,7 +371,7 @@ void process_worker(
 	}
 
 	//correct and send data
-	fp_long phase1_pi = cd.center_phase_prev_pi + cd.phase_slope_pi * fp_long(time_current - cd.center_time_prev); //* t_unit
+	float phase1_pi = cd.center_phase_prev_pi + cd.phase_slope_pi * (time_current - cd.center_time_prev).to_float();
 	fp phase_mod_pi = phase1_pi - hls::floor(phase1_pi/2)*2;
 	fp_compl correction = fp_compl(hls::cospi(-phase_mod_pi), hls::sinpi(-phase_mod_pi));
 	fp_compl inc_corr = fp_compl(fp(in_val.real()), fp(in_val.imag())) * correction;
