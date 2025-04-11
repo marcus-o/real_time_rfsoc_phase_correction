@@ -56,5 +56,4 @@ adjustable_pc/vitis_hls/saturate_stream_dr/vitis_hls.log
 adjustable_pc/vitis_hls/phase_c_dr/test_scripts/input.txt
 adjustable_pc/vitis_hls/phase_c_dr/test_scripts/output.txt
 
-adjustable_pc/vivado/base
-adjustable_pc/vivado/test
+adjustable_pc/vivado/adj
