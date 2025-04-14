@@ -1,20 +1,16 @@
 # %% 2024 Marcus Ossiander TU Graz
-# model code implementing the goal
-# phase correction algorithm in a python way
-# you need test data (load in lines 16-23) to run the code 
 
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import h5py
 
-from scipy.interpolate import PchipInterpolator
 from scipy.signal import find_peaks
 
 # import os
 # %% load data
 # folder = os.path.dirname(os.path.realpath(__file__)) + '/'
-folder = 'fpga/python_model_code/'
+folder = 'fpga/python_development_code/'
 filename = 'acetylene_test_data.hdf5'
 
 with h5py.File(folder + filename, 'r') as hdf5_file:
@@ -94,9 +90,11 @@ for idx, p in enumerate(tqdm(peaks)):
     center_phase_observeds[idx] = np.angle(E_no_carrier[shift])
 
 # %% correct for the phase difference between interferograms
-spl1 = PchipInterpolator(
-    center_time_observeds, np.unwrap(center_phase_observeds), extrapolate=True)
-phase1 = spl1(t_whole)
+phase1 = np.interp(
+    t_whole,
+    center_time_observeds,
+    np.unwrap(center_phase_observeds))
+
 correction = np.exp(-1j * phase1)
 E_phase_corrected = E_no_carrier * correction
 del phase1, correction
@@ -105,17 +103,15 @@ del phase1, correction
 t_rep = (t_whole[peaks[-1]] - t_whole[peaks[0]]) / (peaks.size-1)
 center_time_observeds_optimal = np.arange(0, peaks.size, 1)*t_rep
 
-spl1 = PchipInterpolator(
+t_whole_correct = np.interp(
+    t_whole,
     center_time_observeds,
-    center_time_observeds_optimal,
-    extrapolate=True)
+    center_time_observeds_optimal)
 
-t_whole_correct = spl1(t_whole)
-
-E_resampled = PchipInterpolator(
+E_resampled = np.interp(
+    t_whole,
     t_whole_correct,
-    E_phase_corrected,
-    extrapolate=True)(t_whole)
+    E_phase_corrected)
 
 E_resampled[t_whole > np.max(t_whole_correct)] = 0
 E_resampled[t_whole < np.min(t_whole_correct)] = 0
