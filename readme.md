@@ -1,22 +1,16 @@
 
 # RFSoC Real-Time Dual-Comb Self-Correction Algorithm
-This repository contains a real-time self-correction algorithm for the RFSoC4x2 (https://www.realdigital.org/hardware/rfsoc-4x2) board.
+This repository contains a real-time self-correction algorithm for the RFSoC4x2 ( https://www.realdigital.org/hardware/rfsoc-4x2 ) board.
 The code should be adaptable to other hardware implementing similar field-programmable gate arrays.
-Two codes are provided, one works for a fixed detuning of 20 kHz (easier to understand) and one for arbitrary detunings (more flexible).
+Two codes are provided, one works for a fixed detuning of 20 kHz (retained because it is easier to understand) and one for arbitrary detunings (supports two channel correction, adjustable trigger level, low detunings).
 
 ## Code description
-The code and its application are described in our preprint on the arXiv (https://doi.org/10.48550/arXiv.2503.07005).
+The code and its application are described in our preprint on the arXiv ( https://doi.org/10.48550/arXiv.2503.07005 ).
 
 ## Understanding the code
 Two python scripts in the python_model_code folder illustrate the function of the algorithm and the data flow in the FPGA implementation.
 
 ## Steps for using the provided overlays on the RFSoC4x2
-
-### Real-time phase correction and averaging for a detuning of 20 kHz +- 5%
-Connect to the Jupyter environment on the RFSoC4x2 in your browser and upload the contents of the fixed_pc/pynq folder. The provided notebooks output:
-- the full interferogram train with phase correction (phase_correction_full_data.ipynb)
-- coherently averaged interferograms after phase correction and the interferogram parameters measured by the phase correction (phase_correction_averaging_log.ipynb)
-- the full interferogram train without phase correction (no_phase_correction_full_data.ipynb)
 
 ### Real-time phase correction and averaging for adjustable detunings
 Connect to the Jupyter environment on the RFSoC4x2 in your browser and upload the contents of the adjustable_pc/pynq folder.
@@ -26,6 +20,12 @@ The provided notebook (adjustable_phase_correction.ipynb) can output
 - coherently averaged interferograms after phase correction
 - the interferogram parameters measured by the phase correction
 - the full interferogram train without phase correction
+
+### Real-time phase correction and averaging for a detuning of 20 kHz +- 5%
+Connect to the Jupyter environment on the RFSoC4x2 in your browser and upload the contents of the fixed_pc/pynq folder. The provided notebooks output:
+- the full interferogram train with phase correction (phase_correction_full_data.ipynb)
+- coherently averaged interferograms after phase correction and the interferogram parameters measured by the phase correction (phase_correction_averaging_log.ipynb)
+- the full interferogram train without phase correction (no_phase_correction_full_data.ipynb)
 
 ## Connecting the RFSoC4x2
 The AMD Zynq Ultrascale+ RFSoC XCZU48DR-2FFVG1517E accepts maximally a 1 V peak-to-peak voltage at its analog-to-digital converters which are 100-Ohm terminated. 
@@ -108,6 +108,7 @@ Validation, Experimentation, Writing by A. Eber, M. Schultze, B. Bernhardt, M. O
 
 ## License and Funding
 The code in this repository may be reused under a CC BY-NC 4.0 license ( https://creativecommons.org/licenses/by-nc/4.0/ ).
+If used in academic work, please cite our preprint ( https://doi.org/10.48550/arXiv.2503.07005 ) instead of this repository.
 
 We acknowledge the AMD University Program for software and hardware support.
 
