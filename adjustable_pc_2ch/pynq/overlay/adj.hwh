@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Mon Apr 14 11:09:13 2025" VIVADOVERSION="2022.1">
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Mon Apr 14 17:35:59 2025" VIVADOVERSION="2022.1">
 
   <SYSTEMINFO ARCH="zynquplusRFSOC" BOARD="realdigital.org:rfsoc4x2:part0:1.0" DEVICE="xczu48dr" NAME="adj" PACKAGE="ffvg1517" SPEEDGRADE="-2"/>
 
@@ -173,6 +173,11 @@
       <PARAMETER NAME="FREQ_HZ" VALUE="491520000.0"/>
       <PORTMAPS/>
     </BUSINTERFACE>
+    <BUSINTERFACE BUSNAME="__NOC__" NAME="dac2_clk_1" TYPE="TARGET">
+      <PARAMETER NAME="CAN_DEBUG" VALUE="false"/>
+      <PARAMETER NAME="FREQ_HZ" VALUE="491520000.0"/>
+      <PORTMAPS/>
+    </BUSINTERFACE>
     <BUSINTERFACE BUSNAME="ddr_ddr4_0_C0_DDR4" DATAWIDTH="64" NAME="ddr4_pl" TYPE="INITIATOR">
       <PARAMETER NAME="CAN_DEBUG" VALUE="false"/>
       <PARAMETER NAME="TIMEPERIOD_PS" VALUE="769"/>
@@ -244,11 +249,6 @@
       </PORTMAPS>
     </BUSINTERFACE>
     <BUSINTERFACE BUSNAME="__NOC__" NAME="vout20" TYPE="INITIATOR">
-      <PORTMAPS/>
-    </BUSINTERFACE>
-    <BUSINTERFACE BUSNAME="__NOC__" NAME="dac2_clk_1" TYPE="TARGET">
-      <PARAMETER NAME="CAN_DEBUG" VALUE="false"/>
-      <PARAMETER NAME="FREQ_HZ" VALUE="491520000.0"/>
       <PORTMAPS/>
     </BUSINTERFACE>
   </EXTERNALINTERFACES>
@@ -6676,7 +6676,7 @@
       </DOCUMENTS>
       <PARAMETERS>
         <PARAMETER NAME="NUM_SI" VALUE="1"/>
-        <PARAMETER NAME="NUM_MI" VALUE="11"/>
+        <PARAMETER NAME="NUM_MI" VALUE="12"/>
         <PARAMETER NAME="STRATEGY" VALUE="1"/>
         <PARAMETER NAME="ENABLE_ADVANCED_OPTIONS" VALUE="0"/>
         <PARAMETER NAME="ENABLE_PROTOCOL_CHECKERS" VALUE="0"/>
@@ -8175,6 +8175,103 @@
             <CONNECTION INSTANCE="radio_writer_orig_corrected_2" PORT="s_axi_control_RREADY"/>
           </CONNECTIONS>
         </PORT>
+        <PORT DIR="I" NAME="M11_ACLK" SIGIS="clk" SIGNAME="radio_rfdc_clk_adc0">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_rfdc" PORT="clk_adc0"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="M11_ARESETN" SIGIS="rst" SIGNAME="radio_proc_sys_reset_adc0_peripheral_aresetn">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_proc_sys_reset_adc0" PORT="peripheral_aresetn"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="39" NAME="M11_AXI_awaddr" RIGHT="0" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_awaddr">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="s_axi_a_AWADDR"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="M11_AXI_awprot" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M11_AXI_awvalid" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_awvalid">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="s_axi_a_AWVALID"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="M11_AXI_awready" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_awready">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="s_axi_a_AWREADY"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="31" NAME="M11_AXI_wdata" RIGHT="0" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_wdata">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="s_axi_a_WDATA"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="3" NAME="M11_AXI_wstrb" RIGHT="0" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_wstrb">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="s_axi_a_WSTRB"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="M11_AXI_wvalid" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_wvalid">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="s_axi_a_WVALID"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="M11_AXI_wready" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_wready">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="s_axi_a_WREADY"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="1" NAME="M11_AXI_bresp" RIGHT="0" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_bresp">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="s_axi_a_BRESP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="M11_AXI_bvalid" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_bvalid">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="s_axi_a_BVALID"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="M11_AXI_bready" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_bready">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="s_axi_a_BREADY"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="39" NAME="M11_AXI_araddr" RIGHT="0" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_araddr">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="s_axi_a_ARADDR"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="M11_AXI_arprot" SIGIS="undef"/>
+        <PORT DIR="O" NAME="M11_AXI_arvalid" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_arvalid">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="s_axi_a_ARVALID"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="M11_AXI_arready" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_arready">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="s_axi_a_ARREADY"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="31" NAME="M11_AXI_rdata" RIGHT="0" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_rdata">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="s_axi_a_RDATA"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="1" NAME="M11_AXI_rresp" RIGHT="0" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_rresp">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="s_axi_a_RRESP"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="M11_AXI_rvalid" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_rvalid">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="s_axi_a_RVALID"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="M11_AXI_rready" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_rready">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="s_axi_a_RREADY"/>
+          </CONNECTIONS>
+        </PORT>
       </PORTS>
       <BUSINTERFACES>
         <BUSINTERFACE BUSNAME="radio_axi_interconnect_ps_M01_AXI" DATAWIDTH="32" NAME="S00_AXI" TYPE="SLAVE" VLNV="xilinx.com:interface:aximm:1.0">
@@ -8451,6 +8548,29 @@
             <PORTMAP LOGICAL="RRESP" PHYSICAL="M10_AXI_rresp"/>
             <PORTMAP LOGICAL="RVALID" PHYSICAL="M10_AXI_rvalid"/>
             <PORTMAP LOGICAL="RREADY" PHYSICAL="M10_AXI_rready"/>
+          </PORTMAPS>
+        </BUSINTERFACE>
+        <BUSINTERFACE BUSNAME="radio_axi_interconnect_hpm_M11_AXI" DATAWIDTH="32" NAME="M11_AXI" TYPE="MASTER" VLNV="xilinx.com:interface:aximm:1.0">
+          <PORTMAPS>
+            <PORTMAP LOGICAL="AWADDR" PHYSICAL="M11_AXI_awaddr"/>
+            <PORTMAP LOGICAL="AWPROT" PHYSICAL="M11_AXI_awprot"/>
+            <PORTMAP LOGICAL="AWVALID" PHYSICAL="M11_AXI_awvalid"/>
+            <PORTMAP LOGICAL="AWREADY" PHYSICAL="M11_AXI_awready"/>
+            <PORTMAP LOGICAL="WDATA" PHYSICAL="M11_AXI_wdata"/>
+            <PORTMAP LOGICAL="WSTRB" PHYSICAL="M11_AXI_wstrb"/>
+            <PORTMAP LOGICAL="WVALID" PHYSICAL="M11_AXI_wvalid"/>
+            <PORTMAP LOGICAL="WREADY" PHYSICAL="M11_AXI_wready"/>
+            <PORTMAP LOGICAL="BRESP" PHYSICAL="M11_AXI_bresp"/>
+            <PORTMAP LOGICAL="BVALID" PHYSICAL="M11_AXI_bvalid"/>
+            <PORTMAP LOGICAL="BREADY" PHYSICAL="M11_AXI_bready"/>
+            <PORTMAP LOGICAL="ARADDR" PHYSICAL="M11_AXI_araddr"/>
+            <PORTMAP LOGICAL="ARPROT" PHYSICAL="M11_AXI_arprot"/>
+            <PORTMAP LOGICAL="ARVALID" PHYSICAL="M11_AXI_arvalid"/>
+            <PORTMAP LOGICAL="ARREADY" PHYSICAL="M11_AXI_arready"/>
+            <PORTMAP LOGICAL="RDATA" PHYSICAL="M11_AXI_rdata"/>
+            <PORTMAP LOGICAL="RRESP" PHYSICAL="M11_AXI_rresp"/>
+            <PORTMAP LOGICAL="RVALID" PHYSICAL="M11_AXI_rvalid"/>
+            <PORTMAP LOGICAL="RREADY" PHYSICAL="M11_AXI_rready"/>
           </PORTMAPS>
         </BUSINTERFACE>
       </BUSINTERFACES>
@@ -9305,7 +9425,7 @@
         <PARAMETER NAME="C_M_AXI_MEM_R_ENABLE_USER_PORTS" VALUE="false"/>
         <PARAMETER NAME="C_M_AXI_MEM_W_ENABLE_ID_PORTS" VALUE="false"/>
         <PARAMETER NAME="C_M_AXI_MEM_W_ENABLE_USER_PORTS" VALUE="false"/>
-        <PARAMETER NAME="Component_Name" VALUE="adj_dma_passer_0_0"/>
+        <PARAMETER NAME="Component_Name" VALUE="adj_dma_passer_0"/>
         <PARAMETER NAME="clk_period" VALUE="3.1"/>
         <PARAMETER NAME="machine" VALUE="64"/>
         <PARAMETER NAME="combinational" VALUE="0"/>
@@ -9623,17 +9743,17 @@
         <PORT DIR="O" NAME="m_axi_mem_w_RREADY" SIGIS="undef"/>
         <PORT DIR="I" NAME="in_q_TVALID" SIGIS="undef" SIGNAME="radio_dma_passer_in_q_TVALID">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="radio_trigger_worker_0" PORT="proc1_buf_out_q_TVALID"/>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="proc1_buf_out_q_TVALID"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="in_q_TREADY" SIGIS="undef" SIGNAME="radio_dma_passer_in_q_TREADY">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="radio_trigger_worker_0" PORT="proc1_buf_out_q_TREADY"/>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="proc1_buf_out_q_TREADY"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" LEFT="31" NAME="in_q_TDATA" RIGHT="0" SIGIS="undef" SIGNAME="radio_dma_passer_in_q_TDATA">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="radio_trigger_worker_0" PORT="proc1_buf_out_q_TDATA"/>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="proc1_buf_out_q_TDATA"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="out_q_TVALID" SIGIS="undef" SIGNAME="radio_dma_passer_out_q_TVALID">
@@ -9849,7 +9969,7 @@
             <PORTMAP LOGICAL="RREADY" PHYSICAL="m_axi_mem_w_RREADY"/>
           </PORTMAPS>
         </BUSINTERFACE>
-        <BUSINTERFACE BUSNAME="radio_trigger_worker_0_proc1_buf_out_q" NAME="in_q" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
+        <BUSINTERFACE BUSNAME="radio_trigger_worker_proc1_buf_out_q" NAME="in_q" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
           <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
@@ -10036,7 +10156,7 @@
         <PARAMETER NAME="C_M_AXI_MEM_R_ENABLE_USER_PORTS" VALUE="false"/>
         <PARAMETER NAME="C_M_AXI_MEM_W_ENABLE_ID_PORTS" VALUE="false"/>
         <PARAMETER NAME="C_M_AXI_MEM_W_ENABLE_USER_PORTS" VALUE="false"/>
-        <PARAMETER NAME="Component_Name" VALUE="adj_dma_passer_1_0"/>
+        <PARAMETER NAME="Component_Name" VALUE="adj_dma_passer_2_0"/>
         <PARAMETER NAME="clk_period" VALUE="3.1"/>
         <PARAMETER NAME="machine" VALUE="64"/>
         <PARAMETER NAME="combinational" VALUE="0"/>
@@ -10661,7 +10781,7 @@
       <PARAMETERS>
         <PARAMETER NAME="C_S_AXI_A_ADDR_WIDTH" VALUE="5"/>
         <PARAMETER NAME="C_S_AXI_A_DATA_WIDTH" VALUE="32"/>
-        <PARAMETER NAME="Component_Name" VALUE="adj_passer_32_double_0_0"/>
+        <PARAMETER NAME="Component_Name" VALUE="adj_input_passer_double_0"/>
         <PARAMETER NAME="clk_period" VALUE="3.1"/>
         <PARAMETER NAME="machine" VALUE="64"/>
         <PARAMETER NAME="combinational" VALUE="0"/>
@@ -10784,17 +10904,17 @@
         </PORT>
         <PORT DIR="O" NAME="out_q_TVALID" SIGIS="undef" SIGNAME="radio_input_passer_double_out_q_TVALID">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="radio_trigger_worker_0" PORT="in_q_TVALID"/>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="in_q_TVALID"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" NAME="out_q_TREADY" SIGIS="undef" SIGNAME="radio_input_passer_double_out_q_TREADY">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="radio_trigger_worker_0" PORT="in_q_TREADY"/>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="in_q_TREADY"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" LEFT="31" NAME="out_q_TDATA" RIGHT="0" SIGIS="undef" SIGNAME="radio_input_passer_double_out_q_TDATA">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="radio_trigger_worker_0" PORT="in_q_TDATA"/>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="in_q_TDATA"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" NAME="in_data_2_q_TVALID" SIGIS="undef" SIGNAME="radio_input_passer_double_in_data_2_q_TVALID">
@@ -11615,32 +11735,32 @@
         <PORT DIR="O" NAME="interrupt" SENSITIVITY="LEVEL_HIGH" SIGIS="INTERRUPT"/>
         <PORT DIR="I" NAME="in_ifg_q_TVALID" SIGIS="undef" SIGNAME="radio_measure_worker_in_ifg_q_TVALID">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="radio_trigger_worker_0" PORT="out_meas_ifg_q_TVALID"/>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="out_meas_ifg_q_TVALID"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="in_ifg_q_TREADY" SIGIS="undef" SIGNAME="radio_measure_worker_in_ifg_q_TREADY">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="radio_trigger_worker_0" PORT="out_meas_ifg_q_TREADY"/>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="out_meas_ifg_q_TREADY"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" LEFT="63" NAME="in_ifg_q_TDATA" RIGHT="0" SIGIS="undef" SIGNAME="radio_measure_worker_in_ifg_q_TDATA">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="radio_trigger_worker_0" PORT="out_meas_ifg_q_TDATA"/>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="out_meas_ifg_q_TDATA"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" NAME="in_ifg_time_q_TVALID" SIGIS="undef" SIGNAME="radio_measure_worker_in_ifg_time_q_TVALID">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="radio_trigger_worker_0" PORT="out_meas_ifg_time_q_TVALID"/>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="out_meas_ifg_time_q_TVALID"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="in_ifg_time_q_TREADY" SIGIS="undef" SIGNAME="radio_measure_worker_in_ifg_time_q_TREADY">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="radio_trigger_worker_0" PORT="out_meas_ifg_time_q_TREADY"/>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="out_meas_ifg_time_q_TREADY"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" LEFT="47" NAME="in_ifg_time_q_TDATA" RIGHT="0" SIGIS="undef" SIGNAME="radio_measure_worker_in_ifg_time_q_TDATA">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="radio_trigger_worker_0" PORT="out_meas_ifg_time_q_TDATA"/>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="out_meas_ifg_time_q_TDATA"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="out_correction_data_q_TVALID" SIGIS="undef" SIGNAME="radio_measure_worker_out_correction_data_q_TVALID">
@@ -11742,7 +11862,7 @@
             <PORTMAP LOGICAL="RREADY" PHYSICAL="s_axi_control_RREADY"/>
           </PORTMAPS>
         </BUSINTERFACE>
-        <BUSINTERFACE BUSNAME="radio_trigger_worker_0_out_meas_ifg_q" NAME="in_ifg_q" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
+        <BUSINTERFACE BUSNAME="radio_trigger_worker_out_meas_ifg_q" NAME="in_ifg_q" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="8"/>
           <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
@@ -11762,7 +11882,7 @@
             <PORTMAP LOGICAL="TDATA" PHYSICAL="in_ifg_q_TDATA"/>
           </PORTMAPS>
         </BUSINTERFACE>
-        <BUSINTERFACE BUSNAME="radio_trigger_worker_0_out_meas_ifg_time_q" NAME="in_ifg_time_q" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
+        <BUSINTERFACE BUSNAME="radio_trigger_worker_out_meas_ifg_time_q" NAME="in_ifg_time_q" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="6"/>
           <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
@@ -13353,7 +13473,7 @@
         <PARAMETER NAME="C_M_AXI_AVG_MEM_ENABLE_USER_PORTS" VALUE="false"/>
         <PARAMETER NAME="C_M_AXI_RESULT_MEM_ENABLE_ID_PORTS" VALUE="false"/>
         <PARAMETER NAME="C_M_AXI_RESULT_MEM_ENABLE_USER_PORTS" VALUE="false"/>
-        <PARAMETER NAME="Component_Name" VALUE="adj_pc_averager_0_0"/>
+        <PARAMETER NAME="Component_Name" VALUE="adj_pc_averager_2_0"/>
         <PARAMETER NAME="clk_period" VALUE="3.1"/>
         <PARAMETER NAME="machine" VALUE="64"/>
         <PARAMETER NAME="combinational" VALUE="0"/>
@@ -14192,7 +14312,7 @@
     <MODULE COREREVISION="2114039526" FULLNAME="/radio/pc_dr_2" HWVERSION="1.0" INSTANCE="radio_pc_dr_2" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="pc_dr" VLNV="xilinx.com:hls:pc_dr:1.0">
       <DOCUMENTS/>
       <PARAMETERS>
-        <PARAMETER NAME="Component_Name" VALUE="adj_pc_dr_0_0"/>
+        <PARAMETER NAME="Component_Name" VALUE="adj_pc_dr_2_0"/>
         <PARAMETER NAME="clk_period" VALUE="3.1"/>
         <PARAMETER NAME="machine" VALUE="64"/>
         <PARAMETER NAME="combinational" VALUE="0"/>
@@ -14439,6 +14559,13 @@
             <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S04_ARESETN"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S05_ARESETN"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S06_ARESETN"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S07_ARESETN"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S08_ARESETN"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S09_ARESETN"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S10_ARESETN"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S11_ARESETN"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S12_ARESETN"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="ARESETN"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M00_ARESETN"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M01_ARESETN"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M02_ARESETN"/>
@@ -14446,25 +14573,15 @@
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M04_ARESETN"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M05_ARESETN"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M06_ARESETN"/>
-            <CONNECTION INSTANCE="radio_rfdc" PORT="m0_axis_aresetn"/>
-            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M08_ARESETN"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M07_ARESETN"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M08_ARESETN"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M09_ARESETN"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M10_ARESETN"/>
-            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S08_ARESETN"/>
-            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S07_ARESETN"/>
-            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S09_ARESETN"/>
-            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S11_ARESETN"/>
-            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S10_ARESETN"/>
-            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S12_ARESETN"/>
-            <CONNECTION INSTANCE="radio_input_passer_double" PORT="ap_rst_n"/>
-            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="ARESETN"/>
-            <CONNECTION INSTANCE="radio_axi_interconnect_ps" PORT="M01_ARESETN"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="S00_ARESETN"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_ps" PORT="M01_ARESETN"/>
             <CONNECTION INSTANCE="radio_dma_passer" PORT="ap_rst_n"/>
             <CONNECTION INSTANCE="radio_dma_passer_2" PORT="ap_rst_n"/>
-            <CONNECTION INSTANCE="radio_writer_orig_corrected_2" PORT="ap_rst_n"/>
-            <CONNECTION INSTANCE="radio_writer_orig_2" PORT="ap_rst_n"/>
+            <CONNECTION INSTANCE="radio_input_passer_double" PORT="ap_rst_n"/>
             <CONNECTION INSTANCE="radio_iq_to_hilbert_0" PORT="ap_rst_n"/>
             <CONNECTION INSTANCE="radio_iq_to_hilbert_1" PORT="ap_rst_n"/>
             <CONNECTION INSTANCE="radio_measure_worker" PORT="ap_rst_n"/>
@@ -14472,10 +14589,14 @@
             <CONNECTION INSTANCE="radio_pc_averager_2" PORT="ap_rst_n"/>
             <CONNECTION INSTANCE="radio_pc_dr" PORT="ap_rst_n"/>
             <CONNECTION INSTANCE="radio_pc_dr_2" PORT="ap_rst_n"/>
-            <CONNECTION INSTANCE="radio_trigger_worker_0" PORT="ap_rst_n"/>
+            <CONNECTION INSTANCE="radio_rfdc" PORT="m0_axis_aresetn"/>
             <CONNECTION INSTANCE="radio_writer_log" PORT="ap_rst_n"/>
             <CONNECTION INSTANCE="radio_writer_orig" PORT="ap_rst_n"/>
+            <CONNECTION INSTANCE="radio_writer_orig_2" PORT="ap_rst_n"/>
             <CONNECTION INSTANCE="radio_writer_orig_corrected" PORT="ap_rst_n"/>
+            <CONNECTION INSTANCE="radio_writer_orig_corrected_2" PORT="ap_rst_n"/>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="ap_rst_n"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_ARESETN"/>
           </CONNECTIONS>
         </PORT>
       </PORTS>
@@ -15129,13 +15250,13 @@
         <PARAMETER NAME="C_DAC_TDD_RTS13" VALUE="0"/>
         <PARAMETER NAME="C_DAC2_Enable" VALUE="0"/>
         <PARAMETER NAME="C_DAC2_PLL_Enable" VALUE="false"/>
-        <PARAMETER NAME="C_DAC2_Sampling_Rate" VALUE="4.9152"/>
+        <PARAMETER NAME="C_DAC2_Sampling_Rate" VALUE="6.4"/>
         <PARAMETER NAME="C_DAC2_Fs_Max" VALUE="10.000"/>
-        <PARAMETER NAME="C_DAC2_Refclk_Freq" VALUE="4915.200"/>
-        <PARAMETER NAME="C_DAC2_Outclk_Freq" VALUE="307.200"/>
-        <PARAMETER NAME="C_DAC2_FBDIV" VALUE="20"/>
+        <PARAMETER NAME="C_DAC2_Refclk_Freq" VALUE="6400.000"/>
+        <PARAMETER NAME="C_DAC2_Outclk_Freq" VALUE="50.000"/>
+        <PARAMETER NAME="C_DAC2_FBDIV" VALUE="10"/>
         <PARAMETER NAME="C_DAC2_OutDiv" VALUE="1"/>
-        <PARAMETER NAME="C_DAC2_Vco" VALUE="9830.4"/>
+        <PARAMETER NAME="C_DAC2_Vco" VALUE="8500.0"/>
         <PARAMETER NAME="C_DAC2_Fabric_Freq" VALUE="0.0"/>
         <PARAMETER NAME="C_DAC2_Multi_Tile_Sync" VALUE="false"/>
         <PARAMETER NAME="C_DAC2_Link_Coupling" VALUE="0"/>
@@ -15149,13 +15270,13 @@
         <PARAMETER NAME="C_DAC2_Clock_Dist" VALUE="0"/>
         <PARAMETER NAME="C_DAC_Slice20_Enable" VALUE="false"/>
         <PARAMETER NAME="C_DAC_Data_Type20" VALUE="0"/>
-        <PARAMETER NAME="C_DAC_Data_Width20" VALUE="9"/>
+        <PARAMETER NAME="C_DAC_Data_Width20" VALUE="16"/>
         <PARAMETER NAME="C_DAC_Interpolation_Mode20" VALUE="0"/>
         <PARAMETER NAME="C_DAC_Decoder_Mode20" VALUE="0"/>
         <PARAMETER NAME="C_DAC_Mixer_Type20" VALUE="3"/>
         <PARAMETER NAME="C_DAC_Mixer_Mode20" VALUE="2"/>
         <PARAMETER NAME="C_DAC_Invsinc_Ctrl20" VALUE="false"/>
-        <PARAMETER NAME="C_DAC_Coarse_Mixer_Freq20" VALUE="3"/>
+        <PARAMETER NAME="C_DAC_Coarse_Mixer_Freq20" VALUE="0"/>
         <PARAMETER NAME="C_DAC_NCO_Freq20" VALUE="0.0"/>
         <PARAMETER NAME="C_DAC_NCO_Phase20" VALUE="0"/>
         <PARAMETER NAME="C_DAC_Neg_Quadrature20" VALUE="false"/>
@@ -15934,9 +16055,9 @@
         <PARAMETER NAME="DAC_TDD_RTS13" VALUE="0"/>
         <PARAMETER NAME="DAC2_Enable" VALUE="0"/>
         <PARAMETER NAME="DAC2_PLL_Enable" VALUE="false"/>
-        <PARAMETER NAME="DAC2_Sampling_Rate" VALUE="4.9152"/>
-        <PARAMETER NAME="DAC2_Refclk_Freq" VALUE="4915.200"/>
-        <PARAMETER NAME="DAC2_Outclk_Freq" VALUE="307.200"/>
+        <PARAMETER NAME="DAC2_Sampling_Rate" VALUE="6.4"/>
+        <PARAMETER NAME="DAC2_Refclk_Freq" VALUE="6400.000"/>
+        <PARAMETER NAME="DAC2_Outclk_Freq" VALUE="50.000"/>
         <PARAMETER NAME="DAC2_Fabric_Freq" VALUE="0.0"/>
         <PARAMETER NAME="DAC2_Link_Coupling" VALUE="0"/>
         <PARAMETER NAME="DAC2_Multi_Tile_Sync" VALUE="false"/>
@@ -15948,13 +16069,13 @@
         <PARAMETER NAME="DAC2_Clock_Dist" VALUE="0"/>
         <PARAMETER NAME="DAC_Slice20_Enable" VALUE="false"/>
         <PARAMETER NAME="DAC_Data_Type20" VALUE="0"/>
-        <PARAMETER NAME="DAC_Data_Width20" VALUE="9"/>
+        <PARAMETER NAME="DAC_Data_Width20" VALUE="16"/>
         <PARAMETER NAME="DAC_Interpolation_Mode20" VALUE="0"/>
         <PARAMETER NAME="DAC_Decoder_Mode20" VALUE="0"/>
         <PARAMETER NAME="DAC_Mixer_Type20" VALUE="3"/>
         <PARAMETER NAME="DAC_Mixer_Mode20" VALUE="2"/>
         <PARAMETER NAME="DAC_Invsinc_Ctrl20" VALUE="false"/>
-        <PARAMETER NAME="DAC_Coarse_Mixer_Freq20" VALUE="3"/>
+        <PARAMETER NAME="DAC_Coarse_Mixer_Freq20" VALUE="0"/>
         <PARAMETER NAME="DAC_NCO_Freq20" VALUE="0.0"/>
         <PARAMETER NAME="DAC_NCO_Phase20" VALUE="0"/>
         <PARAMETER NAME="DAC_Neg_Quadrature20" VALUE="false"/>
@@ -16197,6 +16318,13 @@
             <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S04_ACLK"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S05_ACLK"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S06_ACLK"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S07_ACLK"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S08_ACLK"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S09_ACLK"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S10_ACLK"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S11_ACLK"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S12_ACLK"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="ACLK"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M00_ACLK"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M01_ACLK"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M02_ACLK"/>
@@ -16204,26 +16332,15 @@
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M04_ACLK"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M05_ACLK"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M06_ACLK"/>
-            <CONNECTION INSTANCE="radio_proc_sys_reset_adc0" PORT="slowest_sync_clk"/>
-            <CONNECTION INSTANCE="radio_rfdc" PORT="m0_axis_aclk"/>
-            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M09_ACLK"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M07_ACLK"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M08_ACLK"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M09_ACLK"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M10_ACLK"/>
-            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S07_ACLK"/>
-            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S08_ACLK"/>
-            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S09_ACLK"/>
-            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S10_ACLK"/>
-            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S11_ACLK"/>
-            <CONNECTION INSTANCE="radio_axi_interconnect_0" PORT="S12_ACLK"/>
-            <CONNECTION INSTANCE="radio_input_passer_double" PORT="ap_clk"/>
-            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="ACLK"/>
-            <CONNECTION INSTANCE="radio_axi_interconnect_ps" PORT="M01_ACLK"/>
             <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="S00_ACLK"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_ps" PORT="M01_ACLK"/>
             <CONNECTION INSTANCE="radio_dma_passer" PORT="ap_clk"/>
             <CONNECTION INSTANCE="radio_dma_passer_2" PORT="ap_clk"/>
-            <CONNECTION INSTANCE="radio_writer_orig_corrected_2" PORT="ap_clk"/>
-            <CONNECTION INSTANCE="radio_writer_orig_2" PORT="ap_clk"/>
+            <CONNECTION INSTANCE="radio_input_passer_double" PORT="ap_clk"/>
             <CONNECTION INSTANCE="radio_iq_to_hilbert_0" PORT="ap_clk"/>
             <CONNECTION INSTANCE="radio_iq_to_hilbert_1" PORT="ap_clk"/>
             <CONNECTION INSTANCE="radio_measure_worker" PORT="ap_clk"/>
@@ -16231,10 +16348,15 @@
             <CONNECTION INSTANCE="radio_pc_averager_2" PORT="ap_clk"/>
             <CONNECTION INSTANCE="radio_pc_dr" PORT="ap_clk"/>
             <CONNECTION INSTANCE="radio_pc_dr_2" PORT="ap_clk"/>
-            <CONNECTION INSTANCE="radio_trigger_worker_0" PORT="ap_clk"/>
+            <CONNECTION INSTANCE="radio_proc_sys_reset_adc0" PORT="slowest_sync_clk"/>
+            <CONNECTION INSTANCE="radio_rfdc" PORT="m0_axis_aclk"/>
             <CONNECTION INSTANCE="radio_writer_log" PORT="ap_clk"/>
             <CONNECTION INSTANCE="radio_writer_orig" PORT="ap_clk"/>
+            <CONNECTION INSTANCE="radio_writer_orig_2" PORT="ap_clk"/>
             <CONNECTION INSTANCE="radio_writer_orig_corrected" PORT="ap_clk"/>
+            <CONNECTION INSTANCE="radio_writer_orig_corrected_2" PORT="ap_clk"/>
+            <CONNECTION INSTANCE="radio_trigger_worker" PORT="ap_clk"/>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_ACLK"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" NAME="dac0_clk_p" SIGIS="clk" SIGNAME="radio_rfdc_dac0_clk_p">
@@ -16684,7 +16806,7 @@
     <MODULE COREREVISION="2114035351" FULLNAME="/radio/saturate_stream_dr_ch_1" HWVERSION="1.0" INSTANCE="radio_saturate_stream_dr_ch_1" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="saturate_stream_dr" VLNV="xilinx.com:hls:saturate_stream_dr:1.0">
       <DOCUMENTS/>
       <PARAMETERS>
-        <PARAMETER NAME="Component_Name" VALUE="adj_saturate_stream_dr_0_0"/>
+        <PARAMETER NAME="Component_Name" VALUE="adj_saturate_stream_dr_ch_1_0"/>
         <PARAMETER NAME="clk_period" VALUE="3.17"/>
         <PARAMETER NAME="machine" VALUE="64"/>
         <PARAMETER NAME="combinational" VALUE="0"/>
@@ -16742,9 +16864,37 @@
         </BUSINTERFACE>
       </BUSINTERFACES>
     </MODULE>
-    <MODULE COREREVISION="2114039519" FULLNAME="/radio/trigger_worker_0" HWVERSION="1.0" INSTANCE="radio_trigger_worker_0" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="trigger_worker" VLNV="xilinx.com:hls:trigger_worker:1.0">
+    <MODULE COREREVISION="2114039906" FULLNAME="/radio/trigger_worker" HWVERSION="1.0" INSTANCE="radio_trigger_worker" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="trigger_worker" VLNV="xilinx.com:hls:trigger_worker:1.0">
       <DOCUMENTS/>
+      <ADDRESSBLOCKS>
+        <ADDRESSBLOCK ACCESS="read-write" INTERFACE="s_axi_a" NAME="Reg" RANGE="65536" USAGE="register">
+          <REGISTERS>
+            <REGISTER NAME="trig_val_sq">
+              <PROPERTY NAME="DESCRIPTION" VALUE="Data signal of trig_val_sq"/>
+              <PROPERTY NAME="ADDRESS_OFFSET" VALUE="16"/>
+              <PROPERTY NAME="SIZE" VALUE="32"/>
+              <PROPERTY NAME="ACCESS" VALUE="write-only"/>
+              <PROPERTY NAME="IS_ENABLED" VALUE="true"/>
+              <PROPERTY NAME="RESET_VALUE" VALUE="0"/>
+              <FIELDS>
+                <FIELD NAME="trig_val_sq">
+                  <PROPERTY NAME="DESCRIPTION" VALUE="Bit 31 to 0 of trig_val_sq"/>
+                  <PROPERTY NAME="ADDRESS_OFFSET" VALUE="0"/>
+                  <PROPERTY NAME="ACCESS" VALUE="write-only"/>
+                  <PROPERTY NAME="MODIFIED_READ_VALUES" VALUE=""/>
+                  <PROPERTY NAME="WRITE_CONSTRAINT" VALUE="0"/>
+                  <PROPERTY NAME="READ_ACTION" VALUE=""/>
+                  <PROPERTY NAME="BIT_OFFSET" VALUE="0"/>
+                  <PROPERTY NAME="BIT_WIDTH" VALUE="32"/>
+                </FIELD>
+              </FIELDS>
+            </REGISTER>
+          </REGISTERS>
+        </ADDRESSBLOCK>
+      </ADDRESSBLOCKS>
       <PARAMETERS>
+        <PARAMETER NAME="C_S_AXI_A_ADDR_WIDTH" VALUE="5"/>
+        <PARAMETER NAME="C_S_AXI_A_DATA_WIDTH" VALUE="32"/>
         <PARAMETER NAME="Component_Name" VALUE="adj_trigger_worker_0_0"/>
         <PARAMETER NAME="clk_period" VALUE="3.1"/>
         <PARAMETER NAME="machine" VALUE="64"/>
@@ -16752,8 +16902,105 @@
         <PARAMETER NAME="latency" VALUE="8"/>
         <PARAMETER NAME="II" VALUE="x"/>
         <PARAMETER NAME="EDK_IPTYPE" VALUE="PERIPHERAL"/>
+        <PARAMETER NAME="C_S_AXI_A_BASEADDR" VALUE="0xB00F0000"/>
+        <PARAMETER NAME="C_S_AXI_A_HIGHADDR" VALUE="0xB00FFFFF"/>
       </PARAMETERS>
       <PORTS>
+        <PORT DIR="I" LEFT="4" NAME="s_axi_a_AWADDR" RIGHT="0" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_awaddr">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_AXI_awaddr"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="s_axi_a_AWVALID" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_awvalid">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_AXI_awvalid"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="s_axi_a_AWREADY" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_awready">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_AXI_awready"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="31" NAME="s_axi_a_WDATA" RIGHT="0" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_wdata">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_AXI_wdata"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="3" NAME="s_axi_a_WSTRB" RIGHT="0" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_wstrb">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_AXI_wstrb"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="s_axi_a_WVALID" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_wvalid">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_AXI_wvalid"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="s_axi_a_WREADY" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_wready">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_AXI_wready"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="1" NAME="s_axi_a_BRESP" RIGHT="0" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_bresp">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_AXI_bresp"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="s_axi_a_BVALID" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_bvalid">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_AXI_bvalid"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="s_axi_a_BREADY" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_bready">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_AXI_bready"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="4" NAME="s_axi_a_ARADDR" RIGHT="0" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_araddr">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_AXI_araddr"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="s_axi_a_ARVALID" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_arvalid">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_AXI_arvalid"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="s_axi_a_ARREADY" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_arready">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_AXI_arready"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="31" NAME="s_axi_a_RDATA" RIGHT="0" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_rdata">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_AXI_rdata"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="1" NAME="s_axi_a_RRESP" RIGHT="0" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_rresp">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_AXI_rresp"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="s_axi_a_RVALID" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_rvalid">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_AXI_rvalid"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="s_axi_a_RREADY" SIGIS="undef" SIGNAME="radio_axi_interconnect_hpm_M11_AXI_rready">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_axi_interconnect_hpm" PORT="M11_AXI_rready"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT CLKFREQUENCY="307200000" DIR="I" NAME="ap_clk" SIGIS="clk" SIGNAME="radio_rfdc_clk_adc0">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_rfdc" PORT="clk_adc0"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="ap_rst_n" POLARITY="ACTIVE_LOW" SIGIS="rst" SIGNAME="radio_proc_sys_reset_adc0_peripheral_aresetn">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="radio_proc_sys_reset_adc0" PORT="peripheral_aresetn"/>
+          </CONNECTIONS>
+        </PORT>
         <PORT DIR="I" NAME="in_q_TVALID" SIGIS="undef" SIGNAME="radio_input_passer_double_out_q_TVALID">
           <CONNECTIONS>
             <CONNECTION INSTANCE="radio_input_passer_double" PORT="out_q_TVALID"/>
@@ -16814,18 +17061,60 @@
             <CONNECTION INSTANCE="radio_measure_worker" PORT="in_ifg_time_q_TDATA"/>
           </CONNECTIONS>
         </PORT>
-        <PORT CLKFREQUENCY="307200000" DIR="I" NAME="ap_clk" SIGIS="clk" SIGNAME="radio_rfdc_clk_adc0">
-          <CONNECTIONS>
-            <CONNECTION INSTANCE="radio_rfdc" PORT="clk_adc0"/>
-          </CONNECTIONS>
-        </PORT>
-        <PORT DIR="I" NAME="ap_rst_n" POLARITY="ACTIVE_LOW" SIGIS="rst" SIGNAME="radio_proc_sys_reset_adc0_peripheral_aresetn">
-          <CONNECTIONS>
-            <CONNECTION INSTANCE="radio_proc_sys_reset_adc0" PORT="peripheral_aresetn"/>
-          </CONNECTIONS>
-        </PORT>
       </PORTS>
       <BUSINTERFACES>
+        <BUSINTERFACE BUSNAME="radio_axi_interconnect_hpm_M11_AXI" DATAWIDTH="32" NAME="s_axi_a" TYPE="SLAVE" VLNV="xilinx.com:interface:aximm:1.0">
+          <PARAMETER NAME="ADDR_WIDTH" VALUE="5"/>
+          <PARAMETER NAME="DATA_WIDTH" VALUE="32"/>
+          <PARAMETER NAME="PROTOCOL" VALUE="AXI4LITE"/>
+          <PARAMETER NAME="READ_WRITE_MODE" VALUE="READ_WRITE"/>
+          <PARAMETER NAME="FREQ_HZ" VALUE="307200000"/>
+          <PARAMETER NAME="ID_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="AWUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="ARUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="WUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="RUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="BUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="HAS_BURST" VALUE="0"/>
+          <PARAMETER NAME="HAS_LOCK" VALUE="0"/>
+          <PARAMETER NAME="HAS_PROT" VALUE="0"/>
+          <PARAMETER NAME="HAS_CACHE" VALUE="0"/>
+          <PARAMETER NAME="HAS_QOS" VALUE="0"/>
+          <PARAMETER NAME="HAS_REGION" VALUE="0"/>
+          <PARAMETER NAME="HAS_WSTRB" VALUE="1"/>
+          <PARAMETER NAME="HAS_BRESP" VALUE="1"/>
+          <PARAMETER NAME="HAS_RRESP" VALUE="1"/>
+          <PARAMETER NAME="SUPPORTS_NARROW_BURST" VALUE="0"/>
+          <PARAMETER NAME="NUM_READ_OUTSTANDING" VALUE="1"/>
+          <PARAMETER NAME="NUM_WRITE_OUTSTANDING" VALUE="1"/>
+          <PARAMETER NAME="MAX_BURST_LENGTH" VALUE="1"/>
+          <PARAMETER NAME="PHASE" VALUE="0.0"/>
+          <PARAMETER NAME="CLK_DOMAIN" VALUE="adj_rfdc_0_clk_adc0"/>
+          <PARAMETER NAME="NUM_READ_THREADS" VALUE="1"/>
+          <PARAMETER NAME="NUM_WRITE_THREADS" VALUE="1"/>
+          <PARAMETER NAME="RUSER_BITS_PER_BYTE" VALUE="0"/>
+          <PARAMETER NAME="WUSER_BITS_PER_BYTE" VALUE="0"/>
+          <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
+          <PORTMAPS>
+            <PORTMAP LOGICAL="AWADDR" PHYSICAL="s_axi_a_AWADDR"/>
+            <PORTMAP LOGICAL="AWVALID" PHYSICAL="s_axi_a_AWVALID"/>
+            <PORTMAP LOGICAL="AWREADY" PHYSICAL="s_axi_a_AWREADY"/>
+            <PORTMAP LOGICAL="WDATA" PHYSICAL="s_axi_a_WDATA"/>
+            <PORTMAP LOGICAL="WSTRB" PHYSICAL="s_axi_a_WSTRB"/>
+            <PORTMAP LOGICAL="WVALID" PHYSICAL="s_axi_a_WVALID"/>
+            <PORTMAP LOGICAL="WREADY" PHYSICAL="s_axi_a_WREADY"/>
+            <PORTMAP LOGICAL="BRESP" PHYSICAL="s_axi_a_BRESP"/>
+            <PORTMAP LOGICAL="BVALID" PHYSICAL="s_axi_a_BVALID"/>
+            <PORTMAP LOGICAL="BREADY" PHYSICAL="s_axi_a_BREADY"/>
+            <PORTMAP LOGICAL="ARADDR" PHYSICAL="s_axi_a_ARADDR"/>
+            <PORTMAP LOGICAL="ARVALID" PHYSICAL="s_axi_a_ARVALID"/>
+            <PORTMAP LOGICAL="ARREADY" PHYSICAL="s_axi_a_ARREADY"/>
+            <PORTMAP LOGICAL="RDATA" PHYSICAL="s_axi_a_RDATA"/>
+            <PORTMAP LOGICAL="RRESP" PHYSICAL="s_axi_a_RRESP"/>
+            <PORTMAP LOGICAL="RVALID" PHYSICAL="s_axi_a_RVALID"/>
+            <PORTMAP LOGICAL="RREADY" PHYSICAL="s_axi_a_RREADY"/>
+          </PORTMAPS>
+        </BUSINTERFACE>
         <BUSINTERFACE BUSNAME="radio_input_passer_double_out_q" NAME="in_q" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
           <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
@@ -16846,7 +17135,7 @@
             <PORTMAP LOGICAL="TDATA" PHYSICAL="in_q_TDATA"/>
           </PORTMAPS>
         </BUSINTERFACE>
-        <BUSINTERFACE BUSNAME="radio_trigger_worker_0_proc1_buf_out_q" NAME="proc1_buf_out_q" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
+        <BUSINTERFACE BUSNAME="radio_trigger_worker_proc1_buf_out_q" NAME="proc1_buf_out_q" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
           <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
@@ -16866,7 +17155,7 @@
             <PORTMAP LOGICAL="TDATA" PHYSICAL="proc1_buf_out_q_TDATA"/>
           </PORTMAPS>
         </BUSINTERFACE>
-        <BUSINTERFACE BUSNAME="radio_trigger_worker_0_out_meas_ifg_q" NAME="out_meas_ifg_q" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
+        <BUSINTERFACE BUSNAME="radio_trigger_worker_out_meas_ifg_q" NAME="out_meas_ifg_q" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="8"/>
           <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
@@ -16886,7 +17175,7 @@
             <PORTMAP LOGICAL="TDATA" PHYSICAL="out_meas_ifg_q_TDATA"/>
           </PORTMAPS>
         </BUSINTERFACE>
-        <BUSINTERFACE BUSNAME="radio_trigger_worker_0_out_meas_ifg_time_q" NAME="out_meas_ifg_time_q" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
+        <BUSINTERFACE BUSNAME="radio_trigger_worker_out_meas_ifg_time_q" NAME="out_meas_ifg_time_q" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
           <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="6"/>
           <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
           <PARAMETER NAME="LAYERED_METADATA"/>
@@ -18774,7 +19063,7 @@
         <PARAMETER NAME="C_M_AXI_RESULT_MEM_CACHE_VALUE" VALUE="&quot;0011&quot;"/>
         <PARAMETER NAME="C_M_AXI_RESULT_MEM_ENABLE_ID_PORTS" VALUE="false"/>
         <PARAMETER NAME="C_M_AXI_RESULT_MEM_ENABLE_USER_PORTS" VALUE="false"/>
-        <PARAMETER NAME="Component_Name" VALUE="adj_dma_writer_1_0"/>
+        <PARAMETER NAME="Component_Name" VALUE="adj_writer_orig_2_0"/>
         <PARAMETER NAME="clk_period" VALUE="3.1"/>
         <PARAMETER NAME="machine" VALUE="64"/>
         <PARAMETER NAME="combinational" VALUE="0"/>
@@ -20276,7 +20565,7 @@
         <PARAMETER NAME="C_M_AXI_RESULT_MEM_CACHE_VALUE" VALUE="&quot;0011&quot;"/>
         <PARAMETER NAME="C_M_AXI_RESULT_MEM_ENABLE_ID_PORTS" VALUE="false"/>
         <PARAMETER NAME="C_M_AXI_RESULT_MEM_ENABLE_USER_PORTS" VALUE="false"/>
-        <PARAMETER NAME="Component_Name" VALUE="adj_dma_writer_0_0"/>
+        <PARAMETER NAME="Component_Name" VALUE="adj_writer_orig_corrected_2_0"/>
         <PARAMETER NAME="clk_period" VALUE="3.1"/>
         <PARAMETER NAME="machine" VALUE="64"/>
         <PARAMETER NAME="combinational" VALUE="0"/>
@@ -23104,6 +23393,7 @@
         <MEMRANGE ADDRESSBLOCK="Reg" BASENAME="C_S_AXI_CONTROL_BASEADDR" BASEVALUE="0xB00C0000" HIGHNAME="C_S_AXI_CONTROL_HIGHADDR" HIGHVALUE="0xB00CFFFF" INSTANCE="radio_pc_averager_2" IS_DATA="TRUE" IS_INSTRUCTION="TRUE" MASTERBUSINTERFACE="M_AXI_HPM1_FPD" MEMTYPE="REGISTER" SLAVEBUSINTERFACE="s_axi_control"/>
         <MEMRANGE ADDRESSBLOCK="Reg" BASENAME="C_S_AXI_CONTROL_BASEADDR" BASEVALUE="0xB00D0000" HIGHNAME="C_S_AXI_CONTROL_HIGHADDR" HIGHVALUE="0xB00DFFFF" INSTANCE="radio_writer_orig_2" IS_DATA="TRUE" IS_INSTRUCTION="TRUE" MASTERBUSINTERFACE="M_AXI_HPM1_FPD" MEMTYPE="REGISTER" SLAVEBUSINTERFACE="s_axi_control"/>
         <MEMRANGE ADDRESSBLOCK="Reg" BASENAME="C_S_AXI_CONTROL_BASEADDR" BASEVALUE="0xB00E0000" HIGHNAME="C_S_AXI_CONTROL_HIGHADDR" HIGHVALUE="0xB00EFFFF" INSTANCE="radio_writer_orig_corrected_2" IS_DATA="TRUE" IS_INSTRUCTION="TRUE" MASTERBUSINTERFACE="M_AXI_HPM1_FPD" MEMTYPE="REGISTER" SLAVEBUSINTERFACE="s_axi_control"/>
+        <MEMRANGE ADDRESSBLOCK="Reg" BASENAME="C_S_AXI_A_BASEADDR" BASEVALUE="0xB00F0000" HIGHNAME="C_S_AXI_A_HIGHADDR" HIGHVALUE="0xB00FFFFF" INSTANCE="radio_trigger_worker" IS_DATA="TRUE" IS_INSTRUCTION="TRUE" MASTERBUSINTERFACE="M_AXI_HPM1_FPD" MEMTYPE="REGISTER" SLAVEBUSINTERFACE="s_axi_a"/>
         <MEMRANGE ADDRESSBLOCK="C0_DDR4_ADDRESS_BLOCK" BASENAME="C_BASEADDR" BASEVALUE="0x1000000000" HIGHNAME="C_HIGHADDR" HIGHVALUE="0x11FFFFFFFF" INSTANCE="ddr_ddr4_0" IS_DATA="TRUE" IS_INSTRUCTION="TRUE" MASTERBUSINTERFACE="M_AXI_HPM0_FPD" MEMTYPE="MEMORY" SLAVEBUSINTERFACE="C0_DDR4_S_AXI"/>
       </MEMORYMAP>
       <PERIPHERALS>
@@ -23119,6 +23409,7 @@
         <PERIPHERAL INSTANCE="radio_pc_averager_2"/>
         <PERIPHERAL INSTANCE="radio_writer_orig_2"/>
         <PERIPHERAL INSTANCE="radio_writer_orig_corrected_2"/>
+        <PERIPHERAL INSTANCE="radio_trigger_worker"/>
         <PERIPHERAL INSTANCE="ddr_ddr4_0"/>
       </PERIPHERALS>
     </MODULE>

@@ -25,9 +25,6 @@ const int size_ifg_2 = 100;
 // must be power of 2
 const int size_spec_2 = 256;
 
-//trigger value (max is 8192)
-const int trig_val = 500;
-
 // data type for the hilbert worker to shift to zero frequency
 typedef ap_int<4> single_digit;
 
