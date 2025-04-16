@@ -17,9 +17,9 @@ The provided notebook (adjustable_phase_correction.ipynb) can output
 - the full interferogram train without phase correction
 
 ## Connecting the RFSoC4x2
-The AMD Zynq Ultrascale+ RFSoC XCZU48DR-2FFVG1517E accepts maximally a 1 V peak-to-peak voltage at its analog-to-digital converters which are 100-Ohm terminated. 
-The RFSoC4x2 inputs convert from 50 Ohm to 100 Ohm using balancing units, thus, we expect the maximally allowed peak-to-peak voltage at the SMA inputs is 0.5 V (i.e., 0.25 V from zero to the pulse maximum).
-The provided overlays listen for interferograms at port ADC_D. For testing, the overlays, after loading, play an infinite interferogram train on the DAC_B output port. To avoid building a radio, DAC_B must always be connected to the ADC_D port or 50-Ohm terminated.
+The AMD Zynq Ultrascale+ RFSoC XCZU48DR-2FFVG1517E wants a maximum 0.5 V peak-to-peak voltage at its analog-to-digital converters which are 100-Ohm terminated. 
+The RFSoC4x2 inputs convert from 50 Ohm to 100 Ohm using balancing units, thus, we expect the maximally allowed peak-to-peak voltage at the SMA inputs is 0.25 V (i.e., 0.125 V from zero to the pulse maximum).
+The provided overlays listen for interferograms at port ADC_D (reference/ main signal) and ADC_C (second signal). For testing, the overlays, after loading, play an infinite interferogram train on the DAC_B output port. To avoid building a radio, DAC_B must always be connected to the ADC_D port or 50-Ohm terminated.
 
 ## Authors
 Validation, Experimentation, Writing by A. Eber, M. Schultze, B. Bernhardt, M. Ossiander. Code by M. Ossiander.
