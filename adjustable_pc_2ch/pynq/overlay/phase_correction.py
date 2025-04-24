@@ -3,25 +3,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pynq import allocate
 import time
+import struct
 
-from overlay.phase_correction_adjustable_overlay import phase_correction_adjustable_overlay
-
-zero = 0x00000000
-one = 0x3f800000
-mone = 0xbf800000
-two = 0x40000000
-mtwo = 0xc0000000
-three = 0x40400000
-mthree = 0xc0400000
-half = 0x3f000000
-mhalf = 0xbf000000
-third = 0x3eaaaaab
-mthird = 0xbeaaaaab
+from .phase_correction_adjustable_overlay import phase_correction_adjustable_overlay
 
 class phase_correction:
     
     def __init__(
-            self, offset_freq = 20e3, trig_val = 500, delay_ch_2 = 0, phase_mult_ch_2 = one, hardware_avgs=100):
+            self, offset_freq = 20e3, trig_val = 500, delay_ch_2 = 0, phase_mult_ch_2 = 1, hardware_avgs=100):
         self.offset_freq = offset_freq
         self.trig_val = trig_val
         self.delay_ch_2 = delay_ch_2
@@ -44,6 +33,8 @@ class phase_correction:
         
         self.mems = []
         
+        self.ddr4_0 = self.base.ddr.ddr4_0
+        
         self.radio = self.base.radio
         self.pc_averager = self.radio.pc_averager
         self.pc_averager_2 = self.radio.pc_averager_2
@@ -60,29 +51,26 @@ class phase_correction:
         
         self.read_avg_cnt = 0
         
+    def upper(self, address):
+        return int(address/2**32)
+    
+    def lower(self, address):
+        return int(address & 0x00000000ffffffff)
+        
     def setup_pl_ddr_buffer(
             self,
             length, data_type, target_writer,
             target_register_offset_1, target_register_offset_2,
             target_register_offset_1b=None, target_register_offset_2b=None):
-        mem = allocate(shape=(length,), dtype=data_type, target=self.base.ddr.ddr4_0)
+        mem = allocate(shape=(length,), dtype=data_type, target=self.ddr4_0)
         print('buffer address, something wrong if not >= 0x1000000000: ', hex(mem.physical_address))
         mem[:] = np.zeros(length, dtype=data_type)
         mem.flush()
-        target_writer.write(
-            target_register_offset_1.address,
-            int(mem.physical_address & 0x00000000ffffffff))
-        target_writer.write(
-            target_register_offset_2.address,
-            int(mem.physical_address/2**32))
+        target_writer.write(target_register_offset_1.address, self.lower(mem.physical_address))
+        target_writer.write(target_register_offset_2.address, self.upper(mem.physical_address))
         if not target_register_offset_1b==None:
-            target_writer.write(
-                target_register_offset_1b.address,
-                int(mem.physical_address & 0x00000000ffffffff))
-        if not target_register_offset_2b==None:
-            target_writer.write(
-                target_register_offset_2b.address,
-                int(mem.physical_address/2**32))
+            target_writer.write(target_register_offset_1b.address, self.lower(mem.physical_address))
+            target_writer.write(target_register_offset_2b.address, self.upper(mem.physical_address))
         
         self.mems.append(mem)
         return mem

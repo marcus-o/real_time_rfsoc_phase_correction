@@ -47,13 +47,17 @@ adjustable_pc_2ch/vitis_hls/constant_config_writer/vitis_hls.log
 adjustable_pc_2ch/vitis_hls/passer_config_writer/vitis_hls.log
 adjustable_pc_2ch/vitis_hls/passer_128_last/vitis_hls.log
 adjustable_pc_2ch/vitis_hls/passer_32/vitis_hls.log
+adjustable_pc_2ch/vitis_hls/passer_32_double/vitis_hls.log
 adjustable_pc_2ch/vitis_hls/passer_double_rate/vitis_hls.log
 adjustable_pc_2ch/vitis_hls/phase_c_dr/vitis_hls.log
 adjustable_pc_2ch/vitis_hls/saturate_stream_dr/vitis_hls.log
 
 adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/input.txt
 adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/output.txt
-
+adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/sig.txt
+adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/ref.txt
+adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/output2.txt
+adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/output3.txt
 adjustable_pc_2ch/vivado/adj
 
 
@@ -84,5 +88,6 @@ adjustable_pc_1ch/vitis_hls/saturate_stream_dr/vitis_hls.log
 
 adjustable_pc_1ch/vitis_hls/phase_c_dr/test_scripts/input.txt
 adjustable_pc_1ch/vitis_hls/phase_c_dr/test_scripts/output.txt
+
 
 adjustable_pc_1ch/vivado/adj

@@ -77,9 +77,20 @@ void process_worker(
 		first = false;
 	}
 
+	// allow correcting the shg of the reference
+	// swap_bool / swap_phase enables a second 153.6 mhz mixer
+	// necessary for maintaining a locked phase b/w the channels
+	static bool swap_bool = false;
+	float swap_phase;
+	swap_phase = (swap_bool and (cd.phase_mult==2)) ? 1. : 0.;
+	swap_bool = !swap_bool;
+	// phase_mult takes care of the multiplied fluctuations
+	float phase_mult;
+	phase_mult = (cd.phase_mult==2) ? 2. : 1.;
+
 	//correct and send data
 	float phase1_pi = cd.center_phase_prev_pi + cd.phase_slope_pi * (time_current - cd.center_time_prev).to_float(); //* t_unit
-	phase1_pi = phase1_pi * cd.phase_mult;
+	phase1_pi = phase1_pi * phase_mult + swap_phase;
 	fp phase_mod_pi = fp(phase1_pi - hls::floor(phase1_pi/2)*2);
 	fp_compl correction = fp_compl(hls::cospi(-phase_mod_pi), hls::sinpi(-phase_mod_pi));
 	fp_compl inc_corr = fp_compl(fp(in_val.real()), fp(in_val.imag())) * correction;

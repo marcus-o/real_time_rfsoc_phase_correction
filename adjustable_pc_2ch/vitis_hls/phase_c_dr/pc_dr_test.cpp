@@ -12,7 +12,7 @@
 #include "measure_worker.cpp"
 #include "dma_writer.cpp"
 #include "pc_averager.cpp"
-
+#include "trigger_worker.cpp"
 
 int main(){
 
@@ -20,6 +20,7 @@ int main(){
 	int num_samples =  13824;
 
 	hls::stream<adc_data_two_val> hilbert_in_q;
+	hls::stream<adc_data_two_val> hilbert_in_q2;
 
 	// number of packets to send for test
 	int send_packets = num_samples*200;
@@ -61,11 +62,12 @@ int main(){
 				out.v2 = adc_data(fp(8192.) * cos2 * exp2);
 
 				hilbert_in_q.write(out);
+				hilbert_in_q2.write(out);
 			}
 		}
 	// use pre-recorded interferogram stream
 	}else{
-		std::ifstream inputFile("C:/Users/Labor/FPGA/vivado_2022_1/real_time_rfsoc_phase_correction/vitis_hls/phase_c_dr/test_scripts/input.txt", std::ios::binary);
+		std::ifstream inputFile("C:/FPGA/real_time_rfsoc_phase_correction/adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/ref.txt", std::ios::binary);
 		for(int cnt=0; cnt<send_packets/2; cnt++){
 			adc_data_two_val val_out;
 			std::string t_string;
@@ -82,31 +84,53 @@ int main(){
 			hilbert_in_q.write(val_out);
 		}
 		inputFile.close();
-	}
 
+		std::ifstream inputFile2("C:/FPGA/real_time_rfsoc_phase_correction/adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/sig.txt", std::ios::binary);
+		for(int cnt=0; cnt<send_packets/2; cnt++){
+			adc_data_two_val val_out;
+			std::string t_string;
+			std::string sig_string;
+			adc_data in;
+			std::getline(inputFile2, t_string, ',');
+			std::getline(inputFile2, sig_string, '\n');
+			in = adc_data(50000 * std::stof(sig_string.c_str()));
+			val_out.v1 = in;
+			std::getline(inputFile2, t_string, ',');
+			std::getline(inputFile2, sig_string, '\n');
+			in = adc_data(50000 * std::stof(sig_string.c_str()));
+			val_out.v2 = in;
+			hilbert_in_q2.write(val_out);
+		}
+		inputFile2.close();
+	}
+	hls::stream<adc_data_compl> proc1_to_buf_q;
 	hls::stream<adc_data_compl> hilbert_out_q;
+	hls::stream<fp_compl> out_meas_ifg_q;
+	hls::stream<time_int> out_meas_ifg_time_q;
 	for(int cnt=0; cnt<send_packets/2; cnt++){
 		hilbert_transform(hilbert_in_q, hilbert_out_q);
+		trigger_worker(
+				hilbert_out_q,
+				proc1_to_buf_q,
+				out_meas_ifg_q,
+				out_meas_ifg_time_q,
+				500*500
+				);
+	}
+	hls::stream<adc_data_compl> hilbert_out_q2;
+	for(int cnt=0; cnt<send_packets/2; cnt++){
+		hilbert_transform(hilbert_in_q2, hilbert_out_q2);
 	}
 
-	hls::stream<adc_data_compl> proc1_to_buf_q;
-	hls::stream<adc_data_compl> proc1_from_buf_q;
 	hls::stream<adc_data_compl_vec16> out_orig_q;
 	hls::stream<adc_data_compl_vec16> out_orig_corrected_q;
 	hls::stream<adc_data_double_length_compl_vec8> avg_q;
 	hls::stream<correction_data_type> in_correction_data1_q;
-	hls::stream<fp_compl> out_meas_ifg_q;
-	hls::stream<time_int> out_meas_ifg_time_q;
-	pc_dr(
-			hilbert_out_q,
-			//proc1_to_buf_q, proc1_from_buf_q,
-			proc1_to_buf_q, proc1_to_buf_q,
-			out_orig_q, out_orig_corrected_q,
-			avg_q,
-			in_correction_data1_q,
-			out_meas_ifg_q,
-			out_meas_ifg_time_q
-			);
+
+	hls::stream<adc_data_compl_vec16> out_orig_q2;
+	hls::stream<adc_data_compl_vec16> out_orig_corrected_q2;
+	hls::stream<adc_data_double_length_compl_vec8> avg_q2;
+	hls::stream<correction_data_type> in_correction_data1_q2;
 
 	// the writer of the dma passer has no flow control and would overwrite
 	// old data. this is solved by timing in the actual device
@@ -116,44 +140,53 @@ int main(){
 	//dma_passer(proc1_to_buf_q, mem_w, mem_r, 3*num_samples, proc1_from_buf_q);
 
 	hls::stream<log_data_vec4> out_log_data_q;
-	measure_worker(
-			out_meas_ifg_q,
-			out_meas_ifg_time_q,
-			in_correction_data1_q,
-			out_log_data_q,
-			num_samples);
-	printf("measured\n");
-	measure_worker(
-			out_meas_ifg_q,
-			out_meas_ifg_time_q,
-			in_correction_data1_q,
-			out_log_data_q,
-			num_samples);
-	printf("measured\n");
-	measure_worker(
-			out_meas_ifg_q,
-			out_meas_ifg_time_q,
-			in_correction_data1_q,
-			out_log_data_q,
-			num_samples);
-	printf("measured\n");
-	fflush(stdout);
-
-	adc_data_double_length_compl_vec8 avg_mem[num_samples/8];
-	adc_data_double_length_compl_vec8 result_mem[num_samples/8];
-	int demanded_avgs = 33;
-	int write_in = 1;
-	int write_out = 0;
-
-	int ifg = 0;
-	while(write_out==0){
+	for(int cnt1=0; cnt1<36; cnt1++){
 		measure_worker(
 				out_meas_ifg_q,
 				out_meas_ifg_time_q,
 				in_correction_data1_q,
+				in_correction_data1_q2,
 				out_log_data_q,
-				num_samples);
-		printf("measured\n");
+				num_samples, 0, 2);
+	}
+	printf("measured\n");
+	fflush(stdout);
+
+	/*for(int cnt=0; cnt<send_packets; cnt++){
+		pc_dr(
+				hilbert_out_q,
+				out_orig_q, out_orig_corrected_q,
+				avg_q,
+				in_correction_data1_q
+				);
+	}*/
+	for(int cnt=0; cnt<send_packets; cnt++){
+		pc_dr(
+				hilbert_out_q2,
+				out_orig_q2, out_orig_corrected_q2,
+				avg_q2,
+				in_correction_data1_q2
+				);
+	}
+
+	printf("hilbert_out_q: %d \n", hilbert_out_q.size());
+	printf("hilbert_out_q2: %d \n", hilbert_out_q2.size());
+	printf("in_correction_data1_q: %d \n", in_correction_data1_q.size());
+	printf("in_correction_data1_q2: %d \n", in_correction_data1_q2.size());
+	printf("avg_q: %d \n", avg_q.size());
+	printf("avg_q2: %d \n", avg_q2.size());
+	fflush(stdout);
+
+	adc_data_double_length_compl_vec8 avg_mem[num_samples/8];
+	adc_data_double_length_compl_vec8 result_mem[num_samples/8];
+	adc_data_double_length_compl_vec8 avg_mem2[num_samples/8];
+	adc_data_double_length_compl_vec8 result_mem2[num_samples/8];
+	int demanded_avgs = 33;
+
+	/*int write_in = 1;
+	int write_out = 0;
+	int ifg = 0;
+	while(not write_out){
 		pc_averager(
 				avg_q,
 				avg_mem,
@@ -168,23 +201,64 @@ int main(){
 		printf("write_out: %d \n", write_out);
 		printf("ifg_no: %d \n", ifg);
 		fflush(stdout);
+	}*/
+
+	int write_in2 = 1;
+	int write_out2 = 0;
+	int ifg2 = 0;
+	while(not write_out2){
+		pc_averager(
+				avg_q2,
+				avg_mem2,
+				result_mem2,
+				num_samples,
+				demanded_avgs,
+				write_in2,
+				&write_out2
+				);
+		printf("processed 2\n");
+		ifg2++;
+		printf("write_out 2: %d \n", write_out2);
+		printf("ifg_no 2: %d \n", ifg2);
+		fflush(stdout);
 	}
 
 	// get the result and save to file
-	printf("start processing: \r");
-	std::ofstream outputFile("C:/Users/Labor/FPGA/vivado_2022_1/real_time_rfsoc_phase_correction/vitis_hls/phase_c_dr/test_scripts/output.txt");
+	/*printf("start processing avg 1: \r");
+	std::ofstream outputFile("C:/FPGA/real_time_rfsoc_phase_correction/adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/output.txt");
 	for(int cnt1=0; cnt1<num_samples/8; cnt1++){
 		for(int cnt2=0; cnt2<8; cnt2++){
 			outputFile << result_mem[cnt1][cnt2].real().to_int() << std::endl;
 			outputFile << result_mem[cnt1][cnt2].imag().to_int() << std::endl;
 		}
 	}
-	outputFile.close();
+	outputFile.close();*/
+
+	// get the result and save to file
+	printf("start processing avg 2: \r");
+	std::ofstream outputFile2("C:/FPGA/real_time_rfsoc_phase_correction/adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/output2.txt");
+	for(int cnt1=0; cnt1<num_samples/8; cnt1++){
+		for(int cnt2=0; cnt2<8; cnt2++){
+			outputFile2 << result_mem2[cnt1][cnt2].real().to_int() << std::endl;
+			outputFile2 << result_mem2[cnt1][cnt2].imag().to_int() << std::endl;
+		}
+	}
+	outputFile2.close();
+
+	printf("start processing full 2: \r");
+	std::ofstream outputFile3("C:/FPGA/real_time_rfsoc_phase_correction/adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/output3.txt");
+	while(!out_orig_corrected_q2.empty()){
+		adc_data_compl_vec16 out = out_orig_corrected_q2.read();
+		for(int cnt2=0; cnt2<16; cnt2++){
+			outputFile3 << out[cnt2].real().to_int() << std::endl;
+			outputFile3 << out[cnt2].imag().to_int() << std::endl;
+		}
+	}
+	outputFile3.close();
 
 	while(!hilbert_in_q.empty()) hilbert_in_q.read();
 	while(!hilbert_out_q.empty()) hilbert_out_q.read();
 	while(!proc1_to_buf_q.empty()) proc1_to_buf_q.read();
-	while(!proc1_from_buf_q.empty()) proc1_from_buf_q.read();
 	while(!out_orig_q.empty()) out_orig_q.read();
 	while(!out_orig_corrected_q.empty()) out_orig_corrected_q.read();
 	while(!avg_q.empty()) avg_q.read();

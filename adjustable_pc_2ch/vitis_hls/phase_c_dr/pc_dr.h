@@ -92,7 +92,7 @@ typedef struct {
 	float center_phase_prev_pi = 0;
 	fp center_freq0 = 0;
 	int retain_samples = 0;
-	float phase_mult = 1.;
+	int phase_mult = 1;
 } correction_data_type;
 
 // communication data structure from primer to process worker
@@ -135,15 +135,19 @@ void hilbert_transform(
 		hls::stream<adc_data_compl> &out_sig_h_q);
 
 void pc_dr(
-		hls::stream<adc_data_compl> &in_q,
-		hls::stream<adc_data_compl> &proc1_buf_out_q,
 		hls::stream<adc_data_compl> &proc1_buf_in_q,
 		hls::stream<adc_data_compl_vec16> &out_orig_q,
 		hls::stream<adc_data_compl_vec16> &out_orig_corrected_q,
 		hls::stream<adc_data_double_length_compl_vec8> &avg_q,
-		hls::stream<correction_data_type> &in_correction_data1_q,
+		hls::stream<correction_data_type> &in_correction_data1_q
+		);
+
+void trigger_worker(
+		hls::stream<adc_data_compl> &in_q,
+		hls::stream<adc_data_compl> &proc1_buf_out_q,
 		hls::stream<fp_compl> &out_meas_ifg_q,
-		hls::stream<time_int> &out_meas_ifg_time_q
+		hls::stream<time_int> &out_meas_ifg_time_q,
+		int trig_val_sq
 		);
 
 void dma_passer(
@@ -162,7 +166,7 @@ void measure_worker(
 		hls::stream<log_data_vec4> &out_log_data_q,
 		int num_samples,
 		int delay_ch_2,
-		float phase_mult_ch_2
+		int phase_mult_ch_2
 		);
 
 void pc_averager(

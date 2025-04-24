@@ -36,7 +36,7 @@ void measure_worker(
 		hls::stream<log_data_vec4> &out_log_data_q,
 		int num_samples,
 		int delay_ch_2,
-		float phase_mult_ch_2
+		int phase_mult_ch_2
 		){
 	#pragma HLS INTERFACE axis register port = in_ifg_q
 	#pragma HLS INTERFACE axis register port = in_ifg_time_q
@@ -185,7 +185,7 @@ void measure_worker(
 	cd.start_sending_time = fp_time(center_time_observed_exact - fp_long(num_samples/2)*fp_long(sampling_time_unit));
 
 	cd.retain_samples = num_samples;
-	cd.phase_mult = 1.;
+	cd.phase_mult = 1;
 
 	correction_data_type cd2;
 	cd2.center_phase_prev_pi = center_phase_prev_pi;
@@ -199,7 +199,6 @@ void measure_worker(
 	cd2.start_sending_time = fp_time(center_time_observed_exact - fp_long(num_samples/2)*fp_long(sampling_time_unit)) + delay_ch_2;
 
 	cd2.retain_samples = num_samples;
-
 	cd2.phase_mult = phase_mult_ch_2;
 
 	// do not send correction data for the first ifg as it is incomplete
