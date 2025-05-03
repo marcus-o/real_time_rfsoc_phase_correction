@@ -107,7 +107,7 @@ typedef struct {
 	float delta_time_exact = 0;
 	float phase = 0;
 	float center_freq = 0;
-	float spacer = 0;
+	float phase_change_pi = 0;
 } log_data_type;
 typedef ap_uint<2> log_data_stage;
 // 512 bit width for fast dma

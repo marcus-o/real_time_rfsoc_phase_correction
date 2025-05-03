@@ -310,6 +310,6 @@ class phase_correction:
         delta_times = data[::4]
         phases = data[1::4]
         center_freqs = data[2::4]*self.sampling_rate_after_hilbert+self.sampling_rate_after_hilbert/2
-        spacers = data[3::4]
+        phase_change = data[3::4]
         
-        return delta_times, phases, center_freqs
+        return delta_times, phases, center_freqs, phase_change

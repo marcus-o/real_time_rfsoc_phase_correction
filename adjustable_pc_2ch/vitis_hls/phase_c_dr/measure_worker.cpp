@@ -61,6 +61,8 @@ void measure_worker(
 	#pragma HLS reset variable=offset_time0
 	static float center_phase_prev_pi = 0;
 	#pragma HLS reset variable=center_phase_prev_pi
+	static float phase_change_prev_pi = 0;
+	#pragma HLS reset variable=phase_change_prev_pi
 	static float center_freq0 = 0;
 	#pragma HLS reset variable=center_freq0
 
@@ -155,15 +157,40 @@ void measure_worker(
 	// slope of the phase needed to shift frequency to zero
 	float phase_slope_pi = center_freq0 * 2.; //* fp_small_long(t_unit)
 
-	// calculate the leftover phase at the next ifg and correct
-	// first, predict phase correction for the entire ifg-ifg distance
-	float phase_applied_ps_pi = phase_slope_pi * delta_time;
-	// how much additional phase do we need?
-	float add_phase_full_pi = center_phase_observed_pi - center_phase_prev_pi - phase_applied_ps_pi;
-	// calculate the smallest additional phase (assume well behaved lasers)
-	float add_phase_mod_pi = add_phase_full_pi - hls::round(add_phase_full_pi/2.)*2.;
-	// calculate the full phase correction per time unit (phase slope)
-	float full_phase_slope_pi = (phase_applied_ps_pi + add_phase_mod_pi) / delta_time;
+	// two ways to do the phase unwrap
+	float phase_change_pi = 0;
+	float full_phase_slope_pi;
+	// unwrap using the phase change
+	if(0){
+		// calculate the leftover phase at the next ifg and correct
+		// first, predict phase correction for the entire ifg-ifg distance
+		float phase_applied_ps_pi = phase_slope_pi * delta_time;
+		// how much additional phase do we need?
+		float add_phase_full_pi = center_phase_observed_pi - center_phase_prev_pi - phase_applied_ps_pi;
+		// calculate the smallest additional phase (assume well behaved lasers)
+		float add_phase_mod_pi = add_phase_full_pi - hls::round(add_phase_full_pi/2.)*2.;
+		// calculate the full phase correction per time unit (phase slope)
+		full_phase_slope_pi = (phase_applied_ps_pi + add_phase_mod_pi) / delta_time;
+	}
+	// unwrap using change of the phase change
+	if(1){
+		// calculate the leftover phase at the next ifg and correct
+		// first, predict phase correction for the entire ifg-ifg distance
+		float phase_applied_ps_pi = phase_slope_pi * delta_time;
+		float phase_applied_ps_mod_pi = remainder(phase_applied_ps_pi , 2.);
+
+		// how much additional phase do we need?
+		phase_change_pi = center_phase_observed_pi - center_phase_prev_pi - phase_applied_ps_mod_pi;
+		phase_change_pi = (phase_change_pi - phase_change_prev_pi) > 1. ? phase_change_pi - 2. : phase_change_pi;
+		phase_change_pi = (phase_change_pi - phase_change_prev_pi) > 1. ? phase_change_pi - 2. : phase_change_pi;
+		phase_change_pi = (phase_change_pi - phase_change_prev_pi) > 1. ? phase_change_pi - 2. : phase_change_pi;
+
+		phase_change_pi = (phase_change_pi - phase_change_prev_pi) < -1. ? phase_change_pi + 2. : phase_change_pi;
+		phase_change_pi = (phase_change_pi - phase_change_prev_pi) < -1. ? phase_change_pi + 2. : phase_change_pi;
+		phase_change_pi = (phase_change_pi - phase_change_prev_pi) < -1. ? phase_change_pi + 2. : phase_change_pi;
+		// calculate the full phase correction per time unit (phase slope)
+		full_phase_slope_pi = (phase_applied_ps_pi + phase_change_pi) / delta_time;
+	}
 
 	// calculate the sampling time interval to correct for repetition rate changes
 	// start with slight downsampling to be able to correct in both directions
@@ -210,6 +237,8 @@ void measure_worker(
 		ld.delta_time_exact = delta_time_exact;
 		ld.phase = center_phase_observed_pi;
 		ld.center_freq = center_freq_observed;
+		ld.phase_change_pi = phase_change_pi;
+
 		out_log[stage_log] = ld;
 		if (stage_log==3)
 			out_log_data_q.write(out_log);
@@ -220,5 +249,6 @@ void measure_worker(
 	center_time_prev = center_time_observed;
 	center_time_prev_exact = center_time_observed_exact;
 	center_phase_prev_pi = center_phase_observed_pi;
+	phase_change_prev_pi = phase_change_pi;
 	cnt_proc_loops = cnt_proc_loops + 1;
 }
