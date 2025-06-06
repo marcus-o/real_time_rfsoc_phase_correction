@@ -67,7 +67,7 @@ int main(){
 		}
 	// use pre-recorded interferogram stream
 	}else{
-		std::ifstream inputFile("C:/FPGA/real_time_rfsoc_phase_correction/adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/in_2ch_ref.txt", std::ios::binary);
+		std::ifstream inputFile("C:/FPGA/real_time_rfsoc_phase_correction/adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/in_1ch_acetylene.txt", std::ios::binary);
 		for(int cnt=0; cnt<send_packets/2; cnt++){
 			adc_data_two_val val_out;
 			std::string t_string;
@@ -85,7 +85,7 @@ int main(){
 		}
 		inputFile.close();
 
-		std::ifstream inputFile2("C:/FPGA/real_time_rfsoc_phase_correction/adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/in_2ch_shg.txt", std::ios::binary);
+		std::ifstream inputFile2("C:/FPGA/real_time_rfsoc_phase_correction/adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/in_1ch_acetylene.txt", std::ios::binary);
 		for(int cnt=0; cnt<send_packets/2; cnt++){
 			adc_data_two_val val_out;
 			std::string t_string;
@@ -179,7 +179,7 @@ int main(){
 	// somehow test never runs two pc_dr, therefore can only save either
 	// reference or singal data (need to run twice and change the one here to a zero)
 	// save the reference data
-	if(0){
+	if(1){
 		hls::stream<adc_data_compl_vec16> out_orig_q;
 		hls::stream<adc_data_compl_vec16> out_orig_corrected_q;
 		hls::stream<adc_data_double_length_compl_vec8> avg_q;

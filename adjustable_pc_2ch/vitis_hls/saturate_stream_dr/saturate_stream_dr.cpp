@@ -12,7 +12,7 @@ void saturate_stream_dr(
 	static int cnt1 = 0;
 
 	const fp twopi = fp(2.*3.14);
-	const fp omega = twopi*fp(0.11);
+	const fp omega = twopi*fp(0.264); // fp(0.11);
 	const fp dur = 20;
 	const int period = int(614e6/20e3);
 	const fp_long t1 = fp_long(period/2);

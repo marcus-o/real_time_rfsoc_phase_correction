@@ -374,8 +374,8 @@ proc create_hier_cell_radio { parentCell nameHier } {
    CONFIG.ADC_Mixer_Type21 {3} \
    CONFIG.ADC_Mixer_Type22 {3} \
    CONFIG.ADC_Mixer_Type23 {3} \
-   CONFIG.ADC_NCO_Freq00 {0.1536} \
-   CONFIG.ADC_NCO_Freq02 {0.1536} \
+   CONFIG.ADC_NCO_Freq00 {0.0} \
+   CONFIG.ADC_NCO_Freq02 {0.0} \
    CONFIG.ADC_OBS02 {false} \
    CONFIG.ADC_OBS22 {false} \
    CONFIG.ADC_RESERVED_1_00 {false} \
@@ -406,12 +406,12 @@ proc create_hier_cell_radio { parentCell nameHier } {
    CONFIG.DAC_Data_Width00 {2} \
    CONFIG.DAC_Data_Width02 {16} \
    CONFIG.DAC_Data_Width20 {16} \
-   CONFIG.DAC_Interpolation_Mode00 {16} \
+   CONFIG.DAC_Interpolation_Mode00 {8} \
    CONFIG.DAC_Interpolation_Mode02 {0} \
    CONFIG.DAC_Interpolation_Mode20 {0} \
-   CONFIG.DAC_Mixer_Mode00 {0} \
+   CONFIG.DAC_Mixer_Mode00 {2} \
    CONFIG.DAC_Mixer_Mode20 {2} \
-   CONFIG.DAC_Mixer_Type00 {2} \
+   CONFIG.DAC_Mixer_Type00 {1} \
    CONFIG.DAC_Mixer_Type02 {3} \
    CONFIG.DAC_Mixer_Type20 {3} \
    CONFIG.DAC_RESERVED_1_00 {false} \

@@ -1,4 +1,3 @@
-#include "hls_print.h"
 #include "pc_dr.h"
 
 void pc_averager(
