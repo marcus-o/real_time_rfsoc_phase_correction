@@ -2,7 +2,7 @@
 # RFSoC Real-Time Dual-Comb Self-Correction Algorithm
 This repository contains a real-time self-correction algorithm for the RFSoC4x2 ( https://www.realdigital.org/hardware/rfsoc-4x2 ) board.
 The code should be adaptable to other hardware implementing similar field-programmable gate arrays.
-Two codes are provided, one works for a fixed detuning of 20 kHz (retained because it is easier to understand) and one for arbitrary detunings (supports two channel correction, adjustable trigger level, low detunings).
+Three codes are provided, one works for a fixed detuning of 20 kHz and 300 MHz bandwidth (retained because it is easier to understand), one for arbitrary detunings (supports two channel correction, adjustable trigger level, low detunings, 300 MHz bandwidth), and one for arbitrary detunings (>= 20 kHz) and very high bandwidth (2.5 GHz).
 
 ## Code description
 The code and its application are described in our preprint on the arXiv ( https://doi.org/10.48550/arXiv.2503.07005 ).
@@ -45,7 +45,7 @@ For the FPGA, a phase correction code for a fixed detuning of 20 kHz +- 5% was r
 
 ## Recreating the phase correction overlays
 
-### For both overlays
+### For all overlays
 1. install Vivado 2022.1, the version matters.
 
 2. install the RFSoC4x2 board files
@@ -112,4 +112,28 @@ cd location/real_time_rfsoc_phase_correction/adjustable_pc/vivado/
 ```
 source adj.tcl
 ```
+- click generate the bitstream
+
+### For creating the high bandwidth phase correction overlay
+3. build the Vitis HLS ip: for each subfolder in the adjustable_pc_high_speed/vitis_hls folder:
+- in a console, change the working directory to the subfolder
+- to make a vitis_hls console, run (for unix there will be a similar shell script):
+```
+(xilinx install folder)\Vitis_HLS\2022.1\settings64.bat
+```
+- to build the ip using the tcl file in the subfolder, run:
+```
+vitis_hls build.tcl
+```
+
+4. generate the vivado overlay project and bitstream:
+- open vivado and, in the tcl console, switch the working directory to the vivado directory of this repository, e.g.:
+```
+cd location/real_time_rfsoc_phase_correction/adjustable_pc_high_speed/vivado/
+```
+- create the vivado project using the adj.tcl file:
+```
+source adj.tcl
+```
+- in the implementation settings, change the stategy to extra timing opt (this will meet timing for reasonable clock and environmental conditions)
 - click generate the bitstream
