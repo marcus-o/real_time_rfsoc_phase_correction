@@ -248,7 +248,7 @@ int main(){
 	printf("avg_in_q: %d \n", avg_in_q.size());
 	fflush(stdout);
 
-	hls::stream<adc_data_double_length_compl_vec8> avg_out_q;
+	hls::stream<hls::axis<adc_data_double_length_compl_vec8, 0, 0, 0>> avg_out_q;
 	pc_averager(
 		avg_in_q,
 		num_samples,
@@ -259,7 +259,7 @@ int main(){
 	printf("\n saving averaged stream ch 1: \n");
 	std::ofstream outputFile("C:/FPGA/real_time_rfsoc_phase_correction/adjustable_pc_high_speed/vitis_hls/phase_c_dr/test_scripts/out_ref_ch_avg.txt");
 	while(!avg_out_q.empty()){
-		adc_data_double_length_compl_vec8 out = avg_out_q.read();
+		adc_data_double_length_compl_vec8 out = avg_out_q.read().data;
 		for(int cnt2=0; cnt2<8; cnt2++){
 			outputFile << out[cnt2].real().to_int() << std::endl;
 			outputFile << out[cnt2].imag().to_int() << std::endl;

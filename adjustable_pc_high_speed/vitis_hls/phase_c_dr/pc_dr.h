@@ -215,7 +215,7 @@ void pc_averager(
 		hls::stream<adc_data_compl_vec16> &in_q,
 		int num_samples,
 		int demanded_avgs,
-		hls::stream<adc_data_double_length_compl_vec8> &out_q
+		hls::stream<hls::axis<adc_data_double_length_compl_vec8, 0, 0, 0>> &out_q
 		);
 
 void c_complex8_to_16(
