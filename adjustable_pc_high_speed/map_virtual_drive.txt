@@ -1,0 +1,1 @@
+subst V: C:\FPGA\real_time_rfsoc_phase_correction\adjustable_pc_high_speed
