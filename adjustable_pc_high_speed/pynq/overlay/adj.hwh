@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Tue Jul  8 17:03:32 2025" VIVADOVERSION="2022.1">
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Wed Jul  9 20:52:14 2025" VIVADOVERSION="2022.1">
 
   <SYSTEMINFO ARCH="zynquplusRFSOC" BOARD="realdigital.org:rfsoc4x2:part0:1.0" DEVICE="xczu48dr" NAME="adj" PACKAGE="ffvg1517" SPEEDGRADE="-2"/>
 
@@ -10301,7 +10301,7 @@
         </BUSINTERFACE>
       </BUSINTERFACES>
     </MODULE>
-    <MODULE COREREVISION="2114162281" FULLNAME="/radio/pc_averager" HWVERSION="1.0" INSTANCE="radio_pc_averager" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="pc_averager" VLNV="xilinx.com:hls:pc_averager:1.0">
+    <MODULE COREREVISION="2114163942" FULLNAME="/radio/pc_averager" HWVERSION="1.0" INSTANCE="radio_pc_averager" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="pc_averager" VLNV="xilinx.com:hls:pc_averager:1.0">
       <DOCUMENTS/>
       <ADDRESSBLOCKS>
         <ADDRESSBLOCK ACCESS="read-write" INTERFACE="s_axi_control" NAME="Reg" RANGE="65536" USAGE="register">
@@ -13578,7 +13578,7 @@
         </BUSINTERFACE>
       </BUSINTERFACES>
     </MODULE>
-    <MODULE COREREVISION="2114162171" FULLNAME="/radio/uram_fifo_0" HWVERSION="1.0" INSTANCE="radio_uram_fifo_0" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="uram_fifo" VLNV="xilinx.com:hls:uram_fifo:1.0">
+    <MODULE COREREVISION="2114163945" FULLNAME="/radio/uram_fifo_0" HWVERSION="1.0" INSTANCE="radio_uram_fifo_0" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="uram_fifo" VLNV="xilinx.com:hls:uram_fifo:1.0">
       <DOCUMENTS/>
       <PARAMETERS>
         <PARAMETER NAME="Component_Name" VALUE="adj_uram_fifo_0_0"/>

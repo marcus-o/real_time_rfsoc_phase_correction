@@ -25,13 +25,15 @@ void pc_averager(
 	#pragma HLS LOOP_FLATTEN off
 
 		adc_data_double_length_compl_vec8 buf[max_ifg_length];
+		#pragma HLS AGGREGATE compact=auto variable=buf
+		#pragma HLS BIND_STORAGE variable=buf type=ram_s2p impl=uram
+
 
 		adc_data_compl_vec16 in_data;
 		bool swap = true;
 		samples_loop: for(int sample_vec_cnt=0; sample_vec_cnt<num_samples/8; sample_vec_cnt++)
 		{
 			#pragma hls pipeline II=1 style=frp
-			#pragma HLS dependence variable=buf type=inter false
 
 			int offset = swap ? 0 : 8;
 			in_data = swap ? in_q.read() : in_data;

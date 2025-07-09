@@ -26,6 +26,8 @@ void uram_fifo(
 	#pragma HLS INTERFACE axis register port=out_q
 
 	hls_thread_local hls::stream<adc_data_compl_vec, wait_buf_size> between_q;
+	#pragma HLS AGGREGATE compact=auto variable=between_q
+
 	hls_thread_local hls::task t1(uram_fifo_in, in_q, between_q);
 	hls_thread_local hls::task t2(uram_fifo_out, between_q, out_q);
 
