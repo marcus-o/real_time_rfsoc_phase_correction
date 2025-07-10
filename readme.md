@@ -22,7 +22,7 @@ The RFSoC4x2 inputs convert from 50 Ohm to 100 Ohm using balancing units, thus, 
 The provided overlays listen for interferograms at port ADC_D (reference/ main signal) and ADC_C (second signal). For testing, the overlays, after loading, play an infinite interferogram train on the DAC_B output port. To avoid building a radio, DAC_B must always be connected to the ADC_D port or 50-Ohm terminated.
 
 ## Authors
-Validation, Experimentation, Writing by A. Eber, M. Schultze, B. Bernhardt, M. Ossiander. Code by M. Ossiander.
+Validation, Experimentation, Writing by A. Eber, C. Gruber, M. Schultze, B. Bernhardt, M. Ossiander. Code by M. Ossiander.
 
 ## License
 The code in this repository may be reused under a CC BY-NC 4.0 license ( https://creativecommons.org/licenses/by-nc/4.0/ ).
