@@ -22,11 +22,9 @@ int main(){
 	int num_samples =  13824;
 
 	// number of packets to send for test (at 600 MHz)
-	//int send_packets = num_samples*2*180; //2ch
-	int send_packets = num_samples*2*240; // acetylene
+	int send_packets = num_samples*240; // acetylene
 
 	hls::stream<adc_data_two_val_vec> hilbert_in_q;
-	hls::stream<adc_data_two_val_vec> hilbert_in_q2;
 	// use made up input interferogram stream
 	if(0){
 		adc_data_two_val val_out;
@@ -64,23 +62,19 @@ int main(){
 				out.v2 = adc_data(fp(8192.) * cos2 * exp2);
 
 				hilbert_in_q.write(out);
-				hilbert_in_q2.write(out);
 			}
 		}
 	// use pre-recorded interferogram stream
 	}else{
-		std::ifstream inputFile("C:/FPGA/real_time_rfsoc_phase_correction/adjustable_pc_high_speed/vitis_hls/phase_c_dr/test_scripts/in_1ch_acetylene.txt", std::ios::binary);
+		std::ifstream inputFile("C:/FPGA/real_time_rfsoc_phase_correction/test_data/in_1ch_acetylene_short.txt", std::ios::binary);
 		char step = 0;
 		adc_data_two_val_vec vec_out;
 		for(int cnt=0; cnt<send_packets/2; cnt++){
-			std::string t_string;
 			std::string sig_string;
-			std::getline(inputFile, t_string, ',');
 			std::getline(inputFile, sig_string, '\n');
-			vec_out[step].v1 = adc_data(50000 * std::stof(sig_string.c_str()));
-			std::getline(inputFile, t_string, ',');
+			vec_out[step].v1 = adc_data(std::atoi(sig_string.c_str()));
 			std::getline(inputFile, sig_string, '\n');
-			vec_out[step].v2 = adc_data(50000 * std::stof(sig_string.c_str()));
+			vec_out[step].v2 = adc_data(std::atoi(sig_string.c_str()));
 			step++;
 			if(step==8){
 				hilbert_in_q.write(vec_out);
@@ -88,26 +82,6 @@ int main(){
 			}
 		}
 		inputFile.close();
-
-		std::ifstream inputFile2("C:/FPGA/real_time_rfsoc_phase_correction/adjustable_pc_high_speed/vitis_hls/phase_c_dr/test_scripts/in_1ch_acetylene.txt", std::ios::binary);
-		step = 0;
-		for(int cnt=0; cnt<send_packets/2; cnt++){
-			std::string t_string;
-			std::string sig_string;
-			adc_data in;
-			std::getline(inputFile2, t_string, ',');
-			std::getline(inputFile2, sig_string, '\n');
-			vec_out[step].v1 = adc_data(50000 * std::stof(sig_string.c_str()));
-			std::getline(inputFile2, t_string, ',');
-			std::getline(inputFile2, sig_string, '\n');
-			vec_out[step].v2 = adc_data(50000 * std::stof(sig_string.c_str()));
-			step++;
-			if(step==8){
-				hilbert_in_q2.write(vec_out);
-				step = 0;
-			}
-		}
-		inputFile2.close();
 	}
 	printf("load_data_complete \n\n");
 	printf("after hilbert ch1 \n");
@@ -144,13 +118,6 @@ int main(){
 	printf("out_meas_ifg_q: %d \n", out_meas_ifg_q.size());
 	printf("out_meas_ifg_time_q: %d \n\n", out_meas_ifg_time_q.size());
 	fflush(stdout);
-
-	// the writer of the dma passer has no flow control and would overwrite
-	// old data. this is solved by timing in the actual device
-	// this is how you would implement it in test if it was possible
-	//adc_data_compl_vec16 mem_w[num_samples/16*3];
-	//adc_data_compl_vec16 mem_r[num_samples/16*3];
-	//dma_passer(proc1_to_buf_q, mem_w, mem_r, 3*num_samples, proc1_from_buf_q);
 
 	hls::stream<correction_data_type> in_correction_data1_q;
 	hls::stream<correction_data_type> in_correction_data2_q;

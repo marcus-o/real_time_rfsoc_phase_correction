@@ -68,15 +68,15 @@ int main(){
 		}
 	// use pre-recorded interferogram stream
 	}else{
-		std::ifstream inputFile("C:/FPGA/real_time_rfsoc_phase_correction/fixed_pc/vitis_hls/phase_c_dr/test_scripts/input.txt", std::ios::binary);
+		std::ifstream inputFile("C:/FPGA/real_time_rfsoc_phase_correction/test_data/in_1ch_acetylene_short.txt", std::ios::binary);
 		bool swap=true;
 		adc_data_two_val val_out;
 		for(int cnt=0; cnt<send_packets; cnt++){
 			std::string t_string;
 			std::string sig_string;
-			std::getline(inputFile, t_string, ',');
 			std::getline(inputFile, sig_string, '\n');
-			adc_data in = adc_data(50000 * std::stof(sig_string.c_str()));
+			adc_data in = adc_data(std::atoi(sig_string.c_str()));
+
 			if(swap){
 				val_out.v1 = in;
 			}else{

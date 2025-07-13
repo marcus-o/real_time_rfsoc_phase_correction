@@ -20,8 +20,8 @@ int main(){
 	int num_samples =  13824;
 
 	// number of packets to send for test (at 600 MHz)
-	int send_packets = num_samples*2*180; //2ch
-	//int send_packets = num_samples*2*240; // acetylene
+	// int send_packets = num_samples*2*180; //2ch
+	int send_packets = num_samples*2*240; // acetylene
 
 	hls::stream<adc_data_two_val> hilbert_in_q;
 	hls::stream<adc_data_two_val> hilbert_in_q2;
@@ -67,37 +67,33 @@ int main(){
 		}
 	// use pre-recorded interferogram stream
 	}else{
-		std::ifstream inputFile("C:/FPGA/real_time_rfsoc_phase_correction/adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/in_1ch_acetylene.txt", std::ios::binary);
+		std::ifstream inputFile("C:/FPGA/real_time_rfsoc_phase_correction/test_data/in_2ch_ref_short.txt", std::ios::binary);
 		for(int cnt=0; cnt<send_packets/2; cnt++){
 			adc_data_two_val val_out;
 			std::string t_string;
 			std::string sig_string;
 			adc_data in;
-			std::getline(inputFile, t_string, ',');
 			std::getline(inputFile, sig_string, '\n');
-			in = adc_data(50000 * std::stof(sig_string.c_str()));
+			in = adc_data(std::atoi(sig_string.c_str()));
 			val_out.v1 = in;
-			std::getline(inputFile, t_string, ',');
 			std::getline(inputFile, sig_string, '\n');
-			in = adc_data(50000 * std::stof(sig_string.c_str()));
+			in = adc_data(std::atoi(sig_string.c_str()));
 			val_out.v2 = in;
 			hilbert_in_q.write(val_out);
 		}
 		inputFile.close();
 
-		std::ifstream inputFile2("C:/FPGA/real_time_rfsoc_phase_correction/adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/in_1ch_acetylene.txt", std::ios::binary);
+		std::ifstream inputFile2("C:/FPGA/real_time_rfsoc_phase_correction/test_data/in_2ch_shg_short.txt", std::ios::binary);
 		for(int cnt=0; cnt<send_packets/2; cnt++){
 			adc_data_two_val val_out;
 			std::string t_string;
 			std::string sig_string;
 			adc_data in;
-			std::getline(inputFile2, t_string, ',');
 			std::getline(inputFile2, sig_string, '\n');
-			in = adc_data(50000 * std::stof(sig_string.c_str()));
+			in = adc_data(std::atoi(sig_string.c_str()));
 			val_out.v1 = in;
-			std::getline(inputFile2, t_string, ',');
 			std::getline(inputFile2, sig_string, '\n');
-			in = adc_data(50000 * std::stof(sig_string.c_str()));
+			in = adc_data(std::atoi(sig_string.c_str()));
 			val_out.v2 = in;
 			hilbert_in_q2.write(val_out);
 		}
@@ -151,6 +147,7 @@ int main(){
 				out_log_data_q,
 				num_samples, 0, 2);
 	}
+
 	printf("measured ch1 \n\n");
 	printf("out_meas_ifg_q: %d \n", out_meas_ifg_q.size());
 	printf("out_meas_ifg_time_q: %d \n", out_meas_ifg_time_q.size());
@@ -176,19 +173,58 @@ int main(){
 
 	int demanded_avgs = 33;
 
-	// somehow test never runs two pc_dr, therefore can only save either
-	// reference or singal data (need to run twice and change the one here to a zero)
+	// pc_dr never runs twice due to internal variables , therefore this script can only save either
+	// reference or signal data (need to run twice and change the one here to a zero)
 	// save the reference data
 	if(1){
 		hls::stream<adc_data_compl_vec16> out_orig_q;
 		hls::stream<adc_data_compl_vec16> out_orig_corrected_q;
 		hls::stream<adc_data_double_length_compl_vec8> avg_q;
-		pc_dr(
-				proc1_to_buf_q,
-				out_orig_q, out_orig_corrected_q,
-				avg_q,
-				in_correction_data1_q
+
+		hls::stream<correction_data_type, 5> correction_int_q;
+		while(!in_correction_data1_q.empty())
+			in_fifo_correction(
+				in_correction_data1_q,
+				correction_int_q
 				);
+
+		hls::stream<process_data_type, 10> primer_out_q;
+		while((!proc1_to_buf_q.empty()) and (!correction_int_q.empty()))
+			process_worker_primer(
+					proc1_to_buf_q,
+					correction_int_q,
+					primer_out_q
+					);
+
+		hls::stream<adc_data_double_length_compl_vec8, 256> avg_int_q;
+		hls::stream<adc_data_compl_vec16, 256> out_orig_int_q;
+		hls::stream<adc_data_compl_vec16, 256> out_orig_corrected_int_q;
+		while(!primer_out_q.empty())
+			process_worker(
+					primer_out_q,
+					avg_int_q,
+					out_orig_int_q,
+					out_orig_corrected_int_q
+					);
+
+		while(!avg_int_q.empty())
+			out_fifo_avg(
+					avg_int_q,
+					avg_q
+					);
+
+		while(!out_orig_int_q.empty())
+			out_fifo_orig(
+					out_orig_int_q,
+					out_orig_q
+					);
+
+		while(!out_orig_corrected_int_q.empty())
+			out_fifo_orig_corrected(
+					out_orig_corrected_int_q,
+					out_orig_corrected_q
+					);
+
 		printf("after correction ch1 \n");
 		printf("proc1_to_buf_q: %d \n", proc1_to_buf_q.size());
 		printf("out_orig_q: %d \n", out_orig_q.size());
@@ -214,6 +250,8 @@ int main(){
 					);
 			ifg++;
 			printf("ref: ifg_no: %d, write_out: %d,  \n", ifg, write_out);
+			printf("proc1_to_buf_q: %d \n", in_correction_data1_q.size());
+
 			fflush(stdout);
 		}
 		printf("\n");
@@ -251,22 +289,10 @@ int main(){
 		printf("wrote full corrected stream ch 1 \n\n");
 		fflush(stdout);
 
-		while(!out_orig_q.empty()) out_orig_q.read();
-		while(!out_orig_corrected_q.empty()) out_orig_corrected_q.read();
-		while(!avg_q.empty()) avg_q.read();
-
 		return 0;
 	}
 
 	// save the signal data
-
-	while(!hilbert_in_q.empty()) hilbert_in_q.read();
-	while(!hilbert_out_q.empty()) hilbert_out_q.read();
-	while(!proc1_to_buf_q.empty()) proc1_to_buf_q.read();
-	while(!in_correction_data1_q.empty()) in_correction_data1_q.read();
-	while(!out_meas_ifg_q.empty()) out_meas_ifg_q.read();
-	while(!out_meas_ifg_time_q.empty()) out_meas_ifg_time_q.read();
-	while(!out_log_data_q.empty()) out_log_data_q.read();
 
 	hls::stream<adc_data_compl> hilbert_out_q2;
 	for(int cnt=0; cnt<send_packets/2; cnt++){
@@ -274,18 +300,58 @@ int main(){
 	}
 	printf("after hilbert ch2 \n");
 	printf("hilbert_in_q2: %d \n", hilbert_in_q2.size());
-	printf("hilbert_out_q2: %d \n\n", hilbert_out_q2.size());
+	printf("hilbert_out_q2: %d \n", hilbert_out_q2.size());
+	printf("in_correction_data1_q2: %d \n\n", in_correction_data1_q2.size());
 	fflush(stdout);
 
 	hls::stream<adc_data_compl_vec16> out_orig_q2;
 	hls::stream<adc_data_compl_vec16> out_orig_corrected_q2;
 	hls::stream<adc_data_double_length_compl_vec8> avg_q2;
-	pc_dr(
-			hilbert_out_q2,
-			out_orig_q2, out_orig_corrected_q2,
-			avg_q2,
-			in_correction_data1_q2
+
+	hls::stream<correction_data_type, 5> correction_int_q2;
+	while(!in_correction_data1_q2.empty())
+		in_fifo_correction(
+			in_correction_data1_q2,
+			correction_int_q2
 			);
+
+	hls::stream<process_data_type, 10> primer_out_q2;
+	while((!hilbert_out_q2.empty()) and (!correction_int_q2.empty()))
+		process_worker_primer(
+				hilbert_out_q2,
+				correction_int_q2,
+				primer_out_q2
+				);
+
+	hls::stream<adc_data_double_length_compl_vec8, 256> avg_int_q2;
+	hls::stream<adc_data_compl_vec16, 256> out_orig_int_q2;
+	hls::stream<adc_data_compl_vec16, 256> out_orig_corrected_int_q2;
+	while(!primer_out_q2.empty())
+		process_worker(
+				primer_out_q2,
+				avg_int_q2,
+				out_orig_int_q2,
+				out_orig_corrected_int_q2
+				);
+
+	while(!avg_int_q2.empty())
+		out_fifo_avg(
+				avg_int_q2,
+				avg_q2
+				);
+
+	while(!out_orig_int_q2.empty())
+		out_fifo_orig(
+				out_orig_int_q2,
+				out_orig_q2
+				);
+
+	while(!out_orig_corrected_int_q2.empty())
+		out_fifo_orig_corrected(
+				out_orig_corrected_int_q2,
+				out_orig_corrected_q2
+				);
+
 	printf("after correction ch2 \n");
 	printf("hilbert_out_q2: %d \n", hilbert_out_q2.size());
 	printf("out_orig_q2: %d \n", out_orig_q2.size());
@@ -324,7 +390,7 @@ int main(){
 	fflush(stdout);
 
 	// get the result and save to file
-	printf("saving full corrected stream ch 2: \n");
+	printf("saving full averaged stream ch 2: \n");
 	std::ofstream outputFile2("C:/FPGA/real_time_rfsoc_phase_correction/adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/out_sig_ch_avg.txt");
 	for(int cnt1=0; cnt1<num_samples/8; cnt1++){
 		for(int cnt2=0; cnt2<8; cnt2++){
@@ -336,7 +402,7 @@ int main(){
 	printf("wrote averaged stream ch 2 \n\n");
 	fflush(stdout);
 
-	printf("wrote full corrected stream ch 2 \n");
+	printf("saving full corrected stream ch 2 \n");
 	std::ofstream outputFile3("C:/FPGA/real_time_rfsoc_phase_correction/adjustable_pc_2ch/vitis_hls/phase_c_dr/test_scripts/out_orig_corrected.txt");
 	while(!out_orig_corrected_q2.empty()){
 		adc_data_compl_vec16 out = out_orig_corrected_q2.read();
@@ -348,13 +414,6 @@ int main(){
 	outputFile3.close();
 	printf("wrote full corrected stream ch 1 \n\n");
 	fflush(stdout);
-
-	while(!hilbert_in_q2.empty()) hilbert_in_q2.read();
-	while(!hilbert_out_q2.empty()) hilbert_out_q2.read();
-	while(!out_orig_q2.empty()) out_orig_q2.read();
-	while(!out_orig_corrected_q2.empty()) out_orig_corrected_q2.read();
-	while(!avg_q2.empty()) avg_q2.read();
-	while(!in_correction_data1_q2.empty()) in_correction_data1_q2.read();
 
 	// end gracefully
 	return 0;

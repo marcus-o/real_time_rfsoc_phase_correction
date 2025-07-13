@@ -146,3 +146,7 @@ adjustable_pc_high_speed/vivado/test
 adjustable_pc_high_speed/vivado/rfd_clocking_nlv.log
 adjustable_pc_high_speed/vivado/rfd_us_nlv_ADC.log
 adjustable_pc_high_speed/vivado/rfd_us_nlv_DAC.log
+
+test_data/in_1ch_acetylene_short.txt
+test_data/in_2ch_ref_short.txt
+test_data/in_2ch_shg_short.txt

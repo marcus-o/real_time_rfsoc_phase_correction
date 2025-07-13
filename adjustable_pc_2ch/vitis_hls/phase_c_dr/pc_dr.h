@@ -142,6 +142,39 @@ void pc_dr(
 		hls::stream<correction_data_type> &in_correction_data1_q
 		);
 
+void process_worker_primer(
+		hls::stream<adc_data_compl> &in_q,
+		hls::stream<correction_data_type, 5> &in_correction_data_q,
+		hls::stream<process_data_type, 10> &out_q
+		);
+
+void process_worker(
+		hls::stream<process_data_type, 10> &in_q,
+		hls::stream<adc_data_double_length_compl_vec8, 256> &avg_q,
+		hls::stream<adc_data_compl_vec16, 256> &out_orig_q,
+		hls::stream<adc_data_compl_vec16, 256> &out_orig_corrected_q
+		);
+
+void out_fifo_avg(
+		hls::stream<adc_data_double_length_compl_vec8, 256> &in_q,
+		hls::stream<adc_data_double_length_compl_vec8> &out_q
+		);
+
+void out_fifo_orig(
+		hls::stream<adc_data_compl_vec16, 256> &in_q,
+		hls::stream<adc_data_compl_vec16> &out_q
+		);
+
+void out_fifo_orig_corrected(
+		hls::stream<adc_data_compl_vec16, 256> &in_q,
+		hls::stream<adc_data_compl_vec16> &out_q
+		);
+
+void in_fifo_correction(
+	hls::stream<correction_data_type> &in_q,
+	hls::stream<correction_data_type, 5> &out_q
+	);
+
 void trigger_worker(
 		hls::stream<adc_data_compl> &in_q,
 		hls::stream<adc_data_compl> &proc1_buf_out_q,

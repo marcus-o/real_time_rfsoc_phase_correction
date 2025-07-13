@@ -3,20 +3,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-import h5py
-
 from scipy.signal import find_peaks
 
-# import os
 # %% load data
-# folder = os.path.dirname(os.path.realpath(__file__)) + '/'
-folder = 'fpga/python_development_code/'
-filename = 'acetylene_test_data.hdf5'
-
-with h5py.File(folder + filename, 'r') as hdf5_file:
-    t_unit = float(hdf5_file['time_step_s'][0])
-    E_measured = np.array(hdf5_file['photodiode_signal'][:])
-    t_whole = np.arange(E_measured.size) * t_unit
+t_unit = 1e-9
+E_measured = np.loadtxt('C:/FPGA/real_time_rfsoc_phase_correction/test_data/in_1ch_acetylene_short.txt')
+E_measured = E_measured/5811*0.04
+t_whole = np.arange(E_measured.size) * t_unit
 
 rep_rate = 1e9
 
@@ -135,19 +128,6 @@ plt.plot(
 plt.ylim([0, 400])
 plt.show()
 
-freq_mask_plot = (f_ifg_full > 0.000761e8) & (f_ifg_full < 0.000767e8)
-
-plt.plot(
-    f_ifg_full[freq_mask_plot], spec_no_carrier[freq_mask_plot],
-    linewidth=0.2)
-plt.plot(
-    f_ifg_full[freq_mask_plot], spec_resampled[freq_mask_plot],
-    'x-', linewidth=0.2)
-# plt.xlim([0.00075e8, 0.00085e8])
-# plt.xlim([0.4e8, 0.55e8])
-plt.ylim([0, 350])
-plt.show()
-
 freq_mask_plot = (f_ifg_full > -0.0002e8) & (f_ifg_full < 0.0002e8)
 
 plt.plot(
@@ -164,19 +144,6 @@ plt.show()
 freq_mask_plot = (f_ifg_full > -0.001e8) & (f_ifg_full < 0.001e8)
 plt.plot(f_ifg_full[freq_mask_plot], spec_no_carrier[freq_mask_plot])
 plt.plot(f_ifg_full[freq_mask_plot], spec_resampled[freq_mask_plot], ':')
-# plt.xlim([0.00075e8, 0.00085e8])
-# plt.xlim([0.4e8, 0.55e8])
-plt.ylim([0, 400])
-plt.show()
-
-freq_mask_plot = (f_ifg_full > 0.000188e8) & (f_ifg_full < 0.000194e8)
-
-plt.plot(
-    f_ifg_full[freq_mask_plot], spec_no_carrier[freq_mask_plot],
-    linewidth=0.2)
-plt.plot(
-    f_ifg_full[freq_mask_plot], spec_resampled[freq_mask_plot], 'x-',
-    linewidth=0.2)
 # plt.xlim([0.00075e8, 0.00085e8])
 # plt.xlim([0.4e8, 0.55e8])
 plt.ylim([0, 400])

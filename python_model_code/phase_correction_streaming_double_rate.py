@@ -6,7 +6,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-import h5py
 
 import time
 import copy
@@ -16,16 +15,13 @@ import threading
 from functools import partial
 
 # %% load data
-folder = 'fpga/python_development_code/'
-filename = 'acetylene_test_data.hdf5'
+t_unit_real = 1e-9
+t_unit = 1
+E_measured = np.loadtxt('C:/FPGA/real_time_rfsoc_phase_correction/test_data/in_1ch_acetylene_short.txt')
+E_measured = E_measured/5811*0.06
+t_whole = np.arange(E_measured.size) * t_unit_real
 
-with h5py.File(folder + filename, 'r') as hdf5_file:
-    t_unit_real = float(hdf5_file['time_step_s'][0])
-    E_measured = np.array(hdf5_file['photodiode_signal'][:])
-    t_unit = 1
-    t_whole = np.arange(E_measured.size) * t_unit_real
-
-plt.plot(117000*E_measured)
+plt.plot(E_measured)
 plt.show()
 # %%
 sampling_rate = 1e9
@@ -53,7 +49,6 @@ for n in range(hilbert_numtaps):
 def sig_in_worker(sig_q, n):
     for e in E_measured[0:52450*(n+3)]:
         sig_q.put(e)
-        time.sleep(1e-6)
 
 
 def hilbert_worker(in_sig_q, out_sig_h_q):
@@ -74,8 +69,6 @@ def hilbert_worker(in_sig_q, out_sig_h_q):
         elif cnt == 3:
             cnt = -1
         cnt = cnt + 1
-
-        time.sleep(1e-6)
 
 
 def trig_worker(in_sig_h_q, out_proc_q, out_ifg_q, out_ifg_time_q):
@@ -121,8 +114,6 @@ def trig_worker(in_sig_h_q, out_proc_q, out_ifg_q, out_ifg_time_q):
 
         prev_write_val = e
         t_current = t_current + t_unit
-
-        time.sleep(0.1e-6)
 
 
 class correction_data_type:
@@ -226,8 +217,6 @@ def measure_worker(in_ifg_q, in_ifg_time_q, out_correction_data_q):
         cnt_proc_loops += 1
         print(cnt_proc_loops)
 
-        time.sleep(0.1e-6)
-
 
 def process_worker(in_q, out_q, in_correction_data_q):
 
@@ -315,8 +304,6 @@ def process_worker(in_q, out_q, in_correction_data_q):
         else:
             read_idx += 1
 
-        time.sleep(0.1e-6)
-
 
 sig_q = Queue()
 sig_h_q = Queue()
@@ -326,7 +313,7 @@ ifg1_time_q = Queue()
 correction_data1_q = Queue()
 proc2_q = Queue()
 
-n = 100
+n = 58
 
 threading.Thread(
     target=partial(sig_in_worker, sig_q, n), daemon=True).start()
@@ -366,14 +353,6 @@ plt.plot(f_ifg5[plotmask2]/2, fft_temp3[plotmask2], linewidth=0.2)
 # plt.ylim([0, 400])
 plt.show()
 
-plotmask2 = (f_ifg5 > 0.000761e8) & (f_ifg5 < 0.000767e8)
-
-plt.plot(f_ifg5[plotmask2]/2, fft_temp3[plotmask2], 'x-', linewidth=0.2)
-# plt.xlim([0.00075e8, 0.00085e8])
-# plt.xlim([0.4e8, 0.55e8])
-# plt.ylim([0, 350])
-plt.show()
-
 plotmask2 = (f_ifg5 > -0.0002e8) & (f_ifg5 < 0.0002e8)
 
 plt.plot(f_ifg5[plotmask2]/2, fft_temp3[plotmask2], linewidth=0.2)
@@ -384,14 +363,6 @@ plt.show()
 
 plotmask2 = (f_ifg5 > -0.001e8) & (f_ifg5 < 0.001e8)
 plt.plot(f_ifg5[plotmask2]/2, fft_temp3[plotmask2], ':')
-# plt.xlim([0.00075e8, 0.00085e8])
-# plt.xlim([0.4e8, 0.55e8])
-# plt.ylim([0, 400])
-plt.show()
-
-plotmask2 = (f_ifg5 > 0.000188e8) & (f_ifg5 < 0.000194e8)
-
-plt.plot(f_ifg5[plotmask2]/2, fft_temp3[plotmask2], 'x-', linewidth=0.2)
 # plt.xlim([0.00075e8, 0.00085e8])
 # plt.xlim([0.4e8, 0.55e8])
 # plt.ylim([0, 400])
